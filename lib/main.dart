@@ -13,12 +13,12 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'FitK',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
       home: MyHomePage(
-        title: 'Flutter Demo Home Page',
+        title: 'FitK',
       ),
     );
   }
@@ -43,17 +43,27 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget currentPage; // Current Selected Page
 
   List<Exercise> dataList;
+  final PageStorageBucket bucket = PageStorageBucket();
 
   @override
   void initState() {
-    homePage = HomePage();
-    calendarPage = CalendarPage();
-    statisticsPage = StatisticsPage();
-    profilePage = ProfilePage();
-
     dataList = [
-      Exercise(),
+      Exercise(workout: Workout.Bench, date: DateTime.now()),
     ];
+
+    homePage = HomePage(
+      dataSet: dataList,
+    );
+    calendarPage = CalendarPage(
+      dataSet: dataList,
+    );
+    statisticsPage = StatisticsPage(
+      dataSet: dataList,
+    );
+    profilePage = ProfilePage(
+      dataSet: dataList,
+    );
+
     pages = [homePage, calendarPage, statisticsPage, profilePage];
 
     currentPage = homePage;
@@ -68,35 +78,44 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         title: Text(widget.title),
       ),
-      body: currentPage,
-      bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.fixed,
-        currentIndex: _currentTab,
-        onTap: (int index) {
-          setState(() {
-            _currentTab = index;
-            currentPage = pages[index];
-          });
-        },
-        items: <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            title: Text("Home"),
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.calendar_today),
-            title: Text("Calendar"),
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.multiline_chart),
-            title: Text("Statistics"),
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.verified_user),
-            title: Text("Profile"),
-          ),
-        ],
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+      body: PageStorage(
+        child: currentPage,
+        bucket: bucket,
+      ),
+      bottomNavigationBar: _buildBottomNavigationBar(), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
+
+  Widget _buildBottomNavigationBar() {
+    return BottomNavigationBar(
+      type: BottomNavigationBarType.fixed,
+      currentIndex: _currentTab,
+      onTap: (int index) {
+        setState(() {
+          _currentTab = index;
+          currentPage = pages[index];
+        });
+      },
+      items: <BottomNavigationBarItem>[
+        BottomNavigationBarItem(
+          icon: Icon(Icons.home),
+          title: Text("Home"),
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.calendar_today),
+          title: Text("Calendar"),
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.multiline_chart),
+          title: Text("Statistics"),
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.verified_user),
+          title: Text("Profile"),
+        ),
+      ],
+    );
+  }
+
 }
+

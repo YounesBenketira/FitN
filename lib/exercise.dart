@@ -1,19 +1,16 @@
-import 'dart:math';
-
 import './workout.dart';
 
 class Exercise {
+  final DateTime date;
   final Workout workout;
-  Map<int, List> setList = { 0:[]};
+  final setList = Map<int, List>();
   int setCount;
 
-  Exercise({this.workout}){
+  Exercise({this.workout, this.date}) {
     this.setCount = 0;
   }
 
-  void addSet(int reps, int weight){
-//    print(this.setCount);
-//    print(this.setList.length);
+  void addSet(int reps, int weight) {
     this.setList.putIfAbsent(setCount, () => [reps, weight]);
     setCount++;
   }
