@@ -1,3 +1,4 @@
+import 'package:fit_k/UI/exerciseWidget.dart';
 import 'package:fit_k/exercise.dart';
 import 'package:flutter/material.dart';
 
@@ -13,18 +14,16 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
-//    print(DateTime.now());
-//    print("Data Set INfo:");
-//    print(widget.dataSet);
-//    bool isSame = ((DateTime.now().difference(widget.dataSet.keys.first).inDays) == 0);
-//    print(isSame);
-//    print("");
-
-    return Column(
+    return ListView(
+      scrollDirection: Axis.vertical,
       children: <Widget>[
         _buildDayInformation(),
         _buildAddBtn(),
-//        _buildExerciseList(),
+        Column(
+          children: _buildExerciseList().map((entry) {
+            return entry;
+          }).toList(),
+        ),
       ],
     );
   }
@@ -54,13 +53,13 @@ class _HomePageState extends State<HomePage> {
           ),
           child: Center(
               child: Text(
-            DateTime.now().toString(),
-            style: TextStyle(
-              fontSize: 28,
-              color: Colors.lightBlueAccent,
-              fontWeight: FontWeight.bold,
-            ),
-          )),
+                DateTime.now().toString(),
+                style: TextStyle(
+                  fontSize: 28,
+                  color: Colors.lightBlueAccent,
+                  fontWeight: FontWeight.bold,
+                ),
+              )),
         ),
       ),
       Padding(
@@ -211,28 +210,21 @@ class _HomePageState extends State<HomePage> {
             style: TextStyle(color: Colors.white, fontSize: 25),
           ),
           shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+          RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
         ),
       ),
     );
   }
 
-  ListView _buildExerciseList() {
-//    bool isSame = ((DateTime.now().difference(widget.dataSet.keys.first).inDays) == 0);
-//
-//    DateTime now = new DateTime.now();
-//    DateTime todaysDate = new DateTime(now.year, now.month, now.day);
+  List<ExerciseCard> _buildExerciseList() {
+    DateTime now = new DateTime.now();
+    DateTime todaysDate = new DateTime(now.year, now.month, now.day);
 
-    return ListView(
-      scrollDirection: Axis.vertical,
-      children: <Widget>[
-//        ...widget.dataSet[DateTime.now()].map((entry) {
-//          return ExerciseCard(
-//            exercise: entry.workout,
-//            setList: entry.setList,
-//          );
-//        }).toList(),
-      ],
-    );
+    return widget.dataSet[todaysDate].map((entry) {
+      return ExerciseCard(
+        exercise: entry.workout,
+        setList: entry.setList,
+      );
+    }).toList();
   }
 }

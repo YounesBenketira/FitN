@@ -47,9 +47,16 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   void initState() {
+//    bool isSame = ((DateTime.now().difference(widget.dataSet.keys.first).inDays) == 0);
+    // @TODO make this universal so i dont just copy paste everywhere
+    DateTime now = new DateTime.now();
+    DateTime todaysDate = new DateTime(now.year, now.month, now.day);
+
     dataList = {
-      DateTime.now(): [
+      todaysDate: [
         Exercise(workout: Workout.Bench),
+        Exercise(workout: Workout.Squat),
+        Exercise(workout: Workout.Deadlift),
       ],
     };
 

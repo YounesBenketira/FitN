@@ -86,7 +86,7 @@ class _ExerciseCardState extends State<ExerciseCard> {
                       child: Container(
                           width: 50,
                           child: Icon(
-                            Icons.verified_user,
+                            Icons.verified_user, // @TODO fix icons
                           ))),
                   Text(
                     widget.title,
@@ -114,7 +114,7 @@ class _ExerciseCardState extends State<ExerciseCard> {
                 width: 40,
                 height: 40,
                 child: IconButton(
-                  icon: Icon(Icons.add),
+                  icon: Icon(Icons.add), // @TODO add minus button
                   color: Colors.white,
                   onPressed: () {
                     showDialog(
@@ -476,7 +476,8 @@ class _ExerciseCardState extends State<ExerciseCard> {
             child: ListView(
               scrollDirection: Axis.horizontal,
               children: <Widget>[
-//                ...widget.dataSet[DateTime.now()].map((entry) {
+                // @TODO fix setList of each exercise
+//                ...widget.setList[0].map((entry) {
 //                  return entry;
 //                }).toList(),
               ],
