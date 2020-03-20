@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../exercise.dart';
 
 class CalendarPage extends StatefulWidget {
-  List<Exercise> dataSet;
+  Map<DateTime, List<Exercise>> dataSet;
 
   CalendarPage({Key key, this.dataSet}) : super(key: key);
 

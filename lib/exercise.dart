@@ -1,12 +1,11 @@
 import './workout.dart';
 
 class Exercise {
-  final DateTime date;
   final Workout workout;
   final setList = Map<int, List>();
   int setCount;
 
-  Exercise({this.workout, this.date}) {
+  Exercise({this.workout}) {
     this.setCount = 0;
   }
 

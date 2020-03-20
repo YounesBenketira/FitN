@@ -2,7 +2,7 @@ import 'package:fit_k/exercise.dart';
 import 'package:flutter/material.dart';
 
 class StatisticsPage extends StatefulWidget {
-  List<Exercise> dataSet;
+  Map<DateTime, List<Exercise>> dataSet;
 
   StatisticsPage({Key key, this.dataSet}) : super(key: key);
 

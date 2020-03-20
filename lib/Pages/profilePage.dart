@@ -2,7 +2,7 @@ import 'package:fit_k/exercise.dart';
 import 'package:flutter/material.dart';
 
 class ProfilePage extends StatefulWidget {
-  List<Exercise> dataSet;
+  Map<DateTime, List<Exercise>> dataSet;
 
   ProfilePage({Key key, this.dataSet}) : super(key: key);
 

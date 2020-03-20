@@ -42,14 +42,16 @@ class _MyHomePageState extends State<MyHomePage> {
   List<Widget> pages; // List of all pages
   Widget currentPage; // Current Selected Page
 
-  List<Exercise> dataList;
+  Map<DateTime, List<Exercise>> dataList;
   final PageStorageBucket bucket = PageStorageBucket();
 
   @override
   void initState() {
-    dataList = [
-      Exercise(workout: Workout.Bench, date: DateTime.now()),
-    ];
+    dataList = {
+      DateTime.now(): [
+        Exercise(workout: Workout.Bench),
+      ],
+    };
 
     homePage = HomePage(
       dataSet: dataList,
@@ -82,7 +84,8 @@ class _MyHomePageState extends State<MyHomePage> {
         child: currentPage,
         bucket: bucket,
       ),
-      bottomNavigationBar: _buildBottomNavigationBar(), // This trailing comma makes auto-formatting nicer for build methods.
+      bottomNavigationBar:
+          _buildBottomNavigationBar(), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 
@@ -116,6 +119,4 @@ class _MyHomePageState extends State<MyHomePage> {
       ],
     );
   }
-
 }
-
