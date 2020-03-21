@@ -1,9 +1,10 @@
+import 'package:fit_k/Enums/cardTheme.dart';
+import 'package:fit_k/Enums/workout.dart';
+import 'package:fit_k/Logic/exercise.dart';
 import 'package:fit_k/Pages/calendarPage.dart';
 import 'package:fit_k/Pages/homePage.dart';
 import 'package:fit_k/Pages/profilePage.dart';
 import 'package:fit_k/Pages/statisticsPage.dart';
-import 'package:fit_k/exercise.dart';
-import 'package:fit_k/workout.dart';
 import 'package:flutter/material.dart';
 
 void main() => runApp(MyApp());
@@ -34,6 +35,11 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  final Key homeKey = PageStorageKey('HomePage');
+  final Key calendarKey = PageStorageKey('CalendarPage');
+  final Key statisticsKey = PageStorageKey('StatisticsPage');
+  final Key profileKey = PageStorageKey('ProfilePage');
+
   HomePage homePage;
   CalendarPage calendarPage;
   StatisticsPage statisticsPage;
@@ -54,22 +60,24 @@ class _MyHomePageState extends State<MyHomePage> {
 
     dataList = {
       todaysDate: [
-        Exercise(workout: Workout.Bench),
-        Exercise(workout: Workout.Squat),
-        Exercise(workout: Workout.Deadlift),
+        Exercise(workout: Workout.Bench, color: ColorTheme.Blue),
       ],
     };
 
     homePage = HomePage(
+      key: homeKey,
       dataSet: dataList,
     );
     calendarPage = CalendarPage(
+      key: calendarKey,
       dataSet: dataList,
     );
     statisticsPage = StatisticsPage(
+      key: statisticsKey,
       dataSet: dataList,
     );
     profilePage = ProfilePage(
+      key: profileKey,
       dataSet: dataList,
     );
 
@@ -92,7 +100,7 @@ class _MyHomePageState extends State<MyHomePage> {
         bucket: bucket,
       ),
       bottomNavigationBar:
-          _buildBottomNavigationBar(), // This trailing comma makes auto-formatting nicer for build methods.
+      _buildBottomNavigationBar(), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 

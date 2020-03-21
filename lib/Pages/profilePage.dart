@@ -1,4 +1,4 @@
-import 'package:fit_k/exercise.dart';
+import 'package:fit_k/Logic/exercise.dart';
 import 'package:flutter/material.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -11,6 +11,9 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
+  static DateTime now = new DateTime.now();
+  DateTime todaysDate = new DateTime(now.year, now.month, now.day);
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -19,7 +22,7 @@ class _ProfilePageState extends State<ProfilePage> {
       color: Colors.green,
       child: Center(
         child: Text(
-          widget.dataSet.length.toString(),
+          widget.dataSet[todaysDate].length.toString(),
           style: TextStyle(fontSize: 60),
         ),
       ),
