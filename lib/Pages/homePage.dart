@@ -1,8 +1,19 @@
 import 'package:fit_k/Logic/exercise.dart';
-import 'package:fit_k/UI/exerciseDialogueAdd.dart';
-import 'package:fit_k/UI/exerciseWidget.dart';
+import 'package:fit_k/UI/popup_AddExercise.dart';
+import 'package:fit_k/UI/card_Exercise.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+
+/*
+  @TODO Fix following UI components
+    - Delete Set
+    - Remove Exercise
+    - Add Exercise
+    - Add Set
+    = Bottom Navigation Icons
+    = Bottom Navigation Border
+    ? Day Review
+ */
 
 class HomePage extends StatefulWidget {
   final Map<DateTime, List<Exercise>> dataSet;
@@ -23,8 +34,8 @@ class _HomePageState extends State<HomePage> {
     var now = new DateTime.now();
     todaysDate = new DateTime(now.year, now.month, now.day);
 
-    var formatter = new DateFormat('yyyy-MM-dd');
-    formattedDate = formatter.format(now);
+    var formatter = new DateFormat.yMMMMd('en_US');
+    formattedDate = formatter.format(todaysDate);
     updateSets();
 
     super.initState();
@@ -33,7 +44,7 @@ class _HomePageState extends State<HomePage> {
   void updateSets() {
     int setCount = 0;
     for (int i = 0; i < widget.dataSet[todaysDate].length; i++) {
-      int sets = widget.dataSet[todaysDate][i].setList.length;
+      int sets = widget.dataSet[todaysDate][i].getSetCount();
 
       setCount += sets;
     }
@@ -65,11 +76,7 @@ class _HomePageState extends State<HomePage> {
       children: <Widget>[
         _buildDayInformation(),
         _buildAddBtn(),
-        Column(
-          children: _getExerciseList().map((entry) {
-            return entry;
-          }).toList(),
-        ),
+        _buildExerciseList(),
       ],
     );
   }
@@ -184,23 +191,6 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _buildAddBtn() {
-    Widget _popup() {
-      return ExcerciseDialogueAdd(
-        exerciseList: widget.dataSet[todaysDate],
-        addExercise: addExercise,
-      );
-    }
-
-    void _addExercise() {
-      showDialog(
-        context: context,
-        builder: (context) {
-          return _popup();
-        },
-      );
-
-      //widget.dataSet;
-    }
 
     return Padding(
       padding: const EdgeInsets.only(left: 15.0, right: 15.0, bottom: 5),
@@ -210,7 +200,17 @@ class _HomePageState extends State<HomePage> {
         child: RaisedButton(
           highlightElevation: 8,
           color: Colors.lightBlueAccent[100],
-          onPressed: _addExercise,
+          onPressed: () {
+            showDialog(
+              context: context,
+              builder: (context) {
+                return ExerciseCreationPopup(
+                  exerciseList: widget.dataSet[todaysDate],
+                  addExercise: addExercise,
+                );
+              },
+            );
+          },
           child: Text(
             "Add Exercise",
             style: TextStyle(color: Colors.white, fontSize: 25),
@@ -222,13 +222,15 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  List<ExerciseCard> _getExerciseList() {
-    return widget.dataSet[todaysDate].map((entry) {
-      return ExerciseCard(
-        exercise: entry,
-        deleteExercise: removeExercise,
-        updateSets: updateSets,
-      );
-    }).toList();
+  Widget _buildExerciseList() {
+    return Column(
+      children: widget.dataSet[todaysDate].map((entry) {
+        return ExerciseCard(
+          exercise: entry,
+          deleteExercise: removeExercise,
+          updateSets: updateSets,
+        );
+      }).toList(),
+    );
   }
 }

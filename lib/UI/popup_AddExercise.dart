@@ -3,17 +3,17 @@ import 'package:fit_k/Enums/workout.dart';
 import 'package:fit_k/Logic/exercise.dart';
 import 'package:flutter/material.dart';
 
-class ExcerciseDialogueAdd extends StatefulWidget {
+class ExerciseCreationPopup extends StatefulWidget {
   List<Exercise> exerciseList;
   Function addExercise;
 
-  ExcerciseDialogueAdd({this.exerciseList, this.addExercise});
+  ExerciseCreationPopup({this.exerciseList, this.addExercise});
 
   @override
   _ExcerciseDialogueAdd createState() => _ExcerciseDialogueAdd();
 }
 
-class _ExcerciseDialogueAdd extends State<ExcerciseDialogueAdd> {
+class _ExcerciseDialogueAdd extends State<ExerciseCreationPopup> {
   List workoutList = Workout.values;
   List colorList = ColorTheme.values;
 
@@ -171,11 +171,11 @@ class _ExcerciseDialogueAdd extends State<ExcerciseDialogueAdd> {
                   color: Colors.lightBlueAccent[200],
                   onPressed: () {
                     Workout workout = _selectedWorkout;
-                    ColorTheme color = _selectedColor;
+                    ColorTheme theme = _selectedColor;
                     setState(() {
                       widget.addExercise(Exercise(
                         workout: workout,
-                        color: color,
+                        theme: theme,
                       ));
                     });
                     Navigator.of(context).pop();

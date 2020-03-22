@@ -6,22 +6,18 @@ import '../Enums/workout.dart';
 class Exercise {
   static int excerciseCount = 0;
   int index;
-  final Workout workout;
   final setList = Map<int, List>();
-  int setCount;
-  ColorTheme color;
-  Icon icon;
+  final Workout workout;
+  final ColorTheme theme;
+  final Icon icon;
 
-  Exercise({this.workout, this.color, this.icon}) {
+  Exercise({this.workout, this.theme, this.icon}) {
     this.index = excerciseCount;
     excerciseCount++;
-
-    this.setCount = 0;
   }
 
   void addSet(int reps, int weight) {
-    this.setList.putIfAbsent(setCount, () => [reps, weight]);
-    setCount++;
+    this.setList.putIfAbsent(setList.length, () => [reps, weight]);
   }
 
   void removeSet(int key) {
@@ -30,5 +26,17 @@ class Exercise {
 
   static void updateExerciseCount() {
     excerciseCount--;
+  }
+
+  int getSetCount(){
+    return this.setList.length;
+  }
+
+  int getReps(int set){
+    return setList[set][0];
+  }
+
+  int getWeight(int set){
+    return setList[set][1];
   }
 }

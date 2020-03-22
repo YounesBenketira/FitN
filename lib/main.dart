@@ -53,17 +53,16 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   void initState() {
-    // @TODO make this universal so i dont just copy paste everywhere
     DateTime now = new DateTime.now();
     DateTime todaysDate = new DateTime(now.year, now.month, now.day);
 
     dataList = {
       todaysDate: [
-        Exercise(workout: Workout.Bench, color: ColorTheme.Blue),
-        Exercise(workout: Workout.Squat, color: ColorTheme.Yellow),
-        Exercise(workout: Workout.OverHeadPress, color: ColorTheme.Purple),
-        Exercise(workout: Workout.BentOverRow, color: ColorTheme.Peach),
-        Exercise(workout: Workout.Deadlift, color: ColorTheme.Green),
+        Exercise(workout: Workout.Bench, theme: ColorTheme.Blue),
+        Exercise(workout: Workout.Squat, theme: ColorTheme.Yellow),
+        Exercise(workout: Workout.OverHeadPress, theme: ColorTheme.Purple),
+        Exercise(workout: Workout.BentOverRow, theme: ColorTheme.Peach),
+        Exercise(workout: Workout.Deadlift, theme: ColorTheme.Green),
       ],
     };
 

@@ -6,12 +6,64 @@ import '../Logic/exercise.dart';
 //import 'package:fit_k/Enums/cardTheme.dart';
 
 class ExerciseCard extends StatefulWidget {
-  final Exercise exercise;
+  Exercise exercise;
 
-  final Function deleteExercise;
-  final Function updateSets;
+  String _title;
+  List<Color> _theme = new List();
+  Image _icon;
 
-  ExerciseCard({this.exercise, this.deleteExercise, this.updateSets});
+  Function deleteExercise;
+  Function updateSets;
+
+  ExerciseCard({this.exercise, this.deleteExercise, this.updateSets}) {
+    // Dynamically set widget header
+    switch (this.exercise.workout) {
+      case Workout.Bench:
+        this._title = "Bench";
+        this._icon = Image.asset("images/BenchTEMP.png");
+        break;
+      case Workout.Squat:
+        this._title = "Squat";
+        this._icon = Image.asset("images/BarbellTEMP.png");
+        break;
+      case Workout.OverHeadPress:
+        this._title = "Over-Head Press";
+        this._icon = Image.asset("images/DumbbellTEMP.png");
+        break;
+      case Workout.BentOverRow:
+        this._title = "Bent-Over Row";
+        this._icon = Image.asset("images/WeightsTEMP.png");
+        break;
+      case Workout.Deadlift:
+        this._title = "Deadlift";
+        this._icon = Image.asset("images/DeadliftTEMP.png");
+        break;
+    }
+
+    // Dynamically set widget theme
+    switch (this.exercise.theme) {
+      case ColorTheme.Yellow:
+        _theme.add(Colors.yellow[400]);
+        _theme.add(Colors.yellow[700]);
+        break;
+      case ColorTheme.Blue:
+        _theme.add(Colors.lightBlue[200]);
+        _theme.add(Colors.lightBlue[500]);
+        break;
+      case ColorTheme.Purple:
+        _theme.add(Colors.purpleAccent[100]);
+        _theme.add(Colors.purpleAccent[700]);
+        break;
+      case ColorTheme.Peach:
+        _theme.add(Colors.redAccent[100]);
+        _theme.add(Colors.orangeAccent[700]);
+        break;
+      case ColorTheme.Green:
+        _theme.add(Colors.greenAccent);
+        _theme.add(Colors.greenAccent[700]);
+        break;
+    }
+  }
 
   @override
   _ExerciseCardState createState() => _ExerciseCardState();
@@ -21,60 +73,10 @@ class _ExerciseCardState extends State<ExerciseCard> {
   TextEditingController _repController;
   TextEditingController _weightController;
 
-  String title;
-  List<Color> color = new List();
-  Image icon;
-
   @override
   void initState() {
     _repController = new TextEditingController();
     _weightController = new TextEditingController();
-
-    switch (widget.exercise.workout) {
-      case Workout.Bench:
-        title = "Bench";
-        icon = Image.asset("images/BenchTEMP.png");
-        break;
-      case Workout.Squat:
-        title = "Squat";
-        icon = Image.asset("images/BarbellTEMP.png");
-        break;
-      case Workout.OverHeadPress:
-        title = "Over-Head Press";
-        icon = Image.asset("images/DumbbellTEMP.png");
-        break;
-      case Workout.BentOverRow:
-        title = "Bent-Over Row";
-        icon = Image.asset("images/WeightsTEMP.png");
-        break;
-      case Workout.Deadlift:
-        title = "Deadlift";
-        icon = Image.asset("images/DeadliftTEMP.png");
-        break;
-    }
-
-    switch (widget.exercise.color) {
-      case ColorTheme.Yellow:
-        color.add(Colors.yellow[400]);
-        color.add(Colors.yellow[700]);
-        break;
-      case ColorTheme.Blue:
-        color.add(Colors.lightBlue[200]);
-        color.add(Colors.lightBlue[500]);
-        break;
-      case ColorTheme.Purple:
-        color.add(Colors.purpleAccent[100]);
-        color.add(Colors.purpleAccent[700]);
-        break;
-      case ColorTheme.Peach:
-        color.add(Colors.redAccent[100]);
-        color.add(Colors.orangeAccent[700]);
-        break;
-      case ColorTheme.Green:
-        color.add(Colors.greenAccent);
-        color.add(Colors.greenAccent[700]);
-        break;
-    }
 
     super.initState();
   }
@@ -125,7 +127,7 @@ class _ExerciseCardState extends State<ExerciseCard> {
           decoration: BoxDecoration(
               boxShadow: [
                 BoxShadow(
-                  color: color[0].withOpacity(0.9),
+                  color: widget._theme[0].withOpacity(0.9),
                   blurRadius: 8.0, // has the effect of softening the shadow
                   spreadRadius: 1, // has the effect of extending the shadow
                   offset: Offset(
@@ -138,8 +140,8 @@ class _ExerciseCardState extends State<ExerciseCard> {
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
                 colors: [
-                  color[0],
-                  color[1],
+                  widget._theme[0],
+                  widget._theme[1],
                 ],
               ),
               borderRadius: BorderRadius.only(
@@ -161,12 +163,12 @@ class _ExerciseCardState extends State<ExerciseCard> {
           alignment: Alignment.topLeft,
           child: Row(
             children: <Widget>[
-              Container(height: 65, child: Container(width: 75, child: icon)),
+              Container(height: 65, child: Container(width: 75, child: widget._icon)),
               Container(
                 width: 5,
               ),
               Text(
-                title,
+                widget._title,
                 style: TextStyle(
                     fontSize: 25,
                     color: Colors.white,
@@ -219,8 +221,7 @@ class _ExerciseCardState extends State<ExerciseCard> {
                           if (widget.exercise.setList.length == 0)
                             widget.deleteExercise(widget.exercise.index);
                           else
-                            widget.exercise.setList
-                                .remove(widget.exercise.setList.length - 1);
+                            widget.exercise.removeSet(widget.exercise.getSetCount()-1);
 
                           widget.updateSets();
                         });
@@ -370,10 +371,7 @@ class _ExerciseCardState extends State<ExerciseCard> {
                           int reps = int.parse(_repController.text);
                           int weight = int.parse(_weightController.text);
 
-                          widget.exercise.setList.putIfAbsent(
-                            widget.exercise.setList.length,
-                            () => [reps, weight],
-                          );
+                          widget.exercise.addSet(reps, weight);
                           widget.updateSets();
                         });
                         Navigator.of(context).pop();
@@ -475,8 +473,8 @@ class _ExerciseCardState extends State<ExerciseCard> {
 
     List setLog = new List();
     for (int i = 0; i < widget.exercise.setList.length; i++) {
-      int reps = widget.exercise.setList[i][0];
-      int weight = widget.exercise.setList[i][1];
+      int reps = widget.exercise.getReps(i);
+      int weight = widget.exercise.getWeight(i);
       setLog.add(Set(reps, weight));
     }
 
