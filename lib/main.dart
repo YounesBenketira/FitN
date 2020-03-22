@@ -53,7 +53,6 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   void initState() {
-//    bool isSame = ((DateTime.now().difference(widget.dataSet.keys.first).inDays) == 0);
     // @TODO make this universal so i dont just copy paste everywhere
     DateTime now = new DateTime.now();
     DateTime todaysDate = new DateTime(now.year, now.month, now.day);
@@ -61,6 +60,10 @@ class _MyHomePageState extends State<MyHomePage> {
     dataList = {
       todaysDate: [
         Exercise(workout: Workout.Bench, color: ColorTheme.Blue),
+        Exercise(workout: Workout.Squat, color: ColorTheme.Yellow),
+        Exercise(workout: Workout.OverHeadPress, color: ColorTheme.Purple),
+        Exercise(workout: Workout.BentOverRow, color: ColorTheme.Peach),
+        Exercise(workout: Workout.Deadlift, color: ColorTheme.Green),
       ],
     };
 
@@ -92,9 +95,6 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-      ),
       body: PageStorage(
         child: currentPage,
         bucket: bucket,

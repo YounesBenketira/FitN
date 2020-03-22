@@ -191,7 +191,6 @@ class _HomePageState extends State<HomePage> {
       );
     }
 
-    // @TODO implement addExercise Button/Dialogue
     void _addExercise() {
       showDialog(
         context: context,
