@@ -107,21 +107,25 @@ class _ExcerciseDialogueAdd extends State<ExerciseCreationPopup> {
               SizedBox(
                 width: 20,
               ),
-              Text(
-                "Select Workout: ",
-                style: TextStyle(fontSize: 20),
+              Container(
+                width: 100,
+                height: 30,
+                child: FittedBox(
+                  alignment: Alignment.centerLeft,
+                  fit: BoxFit.contain,
+                  child: Text(
+                    "Workout: ",
+                    style: TextStyle(fontSize: 20),
+                  ),
+                ),
               ),
               SizedBox(
                 width: 10,
               ),
-              Container(
-//            height: 40,
-                color: Colors.white10,
-                child: DropdownButton(
-                  value: _selectedWorkout,
-                  items: _workoutMenuItems,
-                  onChanged: changeWorkout,
-                ),
+              DropdownButton(
+                value: _selectedWorkout,
+                items: _workoutMenuItems,
+                onChanged: changeWorkout,
               ),
             ],
           ),
@@ -130,12 +134,20 @@ class _ExcerciseDialogueAdd extends State<ExerciseCreationPopup> {
               SizedBox(
                 width: 20,
               ),
-              Text(
-                "Select Color: ",
-                style: TextStyle(fontSize: 20),
+              Container(
+                width: 90,
+                height: 30,
+                child: FittedBox(
+                  alignment: Alignment.centerLeft,
+                  fit: BoxFit.contain,
+                  child: Text(
+                    "Color: ",
+                    style: TextStyle(fontSize: 20),
+                  ),
+                ),
               ),
-              SizedBox(
-                width: 37,
+              Container(
+                width: 20,
               ),
               Container(
 //            height: 40,
@@ -174,6 +186,7 @@ class _ExcerciseDialogueAdd extends State<ExerciseCreationPopup> {
                     ColorTheme theme = _selectedColor;
                     setState(() {
                       widget.addExercise(Exercise(
+                        id: widget.exerciseList.length,
                         workout: workout,
                         theme: theme,
                       ));

@@ -1,11 +1,13 @@
+import 'package:fit_k/Logic/controller_data.dart';
+import 'package:flutter/material.dart';
+
 import 'package:fit_k/Enums/cardTheme.dart';
 import 'package:fit_k/Enums/workout.dart';
 import 'package:fit_k/Logic/exercise.dart';
-import 'package:fit_k/Pages/calendarPage.dart';
-import 'package:fit_k/Pages/homePage.dart';
-import 'package:fit_k/Pages/profilePage.dart';
-import 'package:fit_k/Pages/statisticsPage.dart';
-import 'package:flutter/material.dart';
+import 'package:fit_k/Pages/page_calendar.dart';
+import 'package:fit_k/Pages/page_home.dart';
+import 'package:fit_k/Pages/page_profile.dart';
+import 'package:fit_k/Pages/page_statistics.dart';
 
 void main() => runApp(MyApp());
 
@@ -49,6 +51,8 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget currentPage; // Current Selected Page
 
   Map<DateTime, List<Exercise>> dataList;
+  DataController dataController;
+
   final PageStorageBucket bucket = PageStorageBucket();
 
   @override
@@ -56,15 +60,37 @@ class _MyHomePageState extends State<MyHomePage> {
     DateTime now = new DateTime.now();
     DateTime todaysDate = new DateTime(now.year, now.month, now.day);
 
+
     dataList = {
       todaysDate: [
-        Exercise(workout: Workout.Bench, theme: ColorTheme.Blue),
-        Exercise(workout: Workout.Squat, theme: ColorTheme.Yellow),
-        Exercise(workout: Workout.OverHeadPress, theme: ColorTheme.Purple),
-        Exercise(workout: Workout.BentOverRow, theme: ColorTheme.Peach),
-        Exercise(workout: Workout.Deadlift, theme: ColorTheme.Green),
+        Exercise(
+          id: 0,
+          workout: Workout.Bench,
+          theme: ColorTheme.Blue,
+        ),
+        Exercise(
+          id: 1,
+          workout: Workout.Squat,
+          theme: ColorTheme.Yellow,
+        ),
+        Exercise(
+          id: 2,
+          workout: Workout.OverHeadPress,
+          theme: ColorTheme.Purple,
+        ),
+        Exercise(
+          id: 3,
+          workout: Workout.BentOverRow,
+          theme: ColorTheme.Peach,
+        ),
+        Exercise(
+          id: 4,
+          workout: Workout.Deadlift,
+          theme: ColorTheme.Green,
+        ),
       ],
     };
+
 
     homePage = HomePage(
       key: homeKey,
@@ -99,7 +125,7 @@ class _MyHomePageState extends State<MyHomePage> {
         bucket: bucket,
       ),
       bottomNavigationBar:
-      _buildBottomNavigationBar(), // This trailing comma makes auto-formatting nicer for build methods.
+          _buildBottomNavigationBar(), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 

@@ -54,12 +54,13 @@ class _HomePageState extends State<HomePage> {
   }
 
   void removeExercise(int index) {
+    print(index);
     setState(() {
       widget.dataSet[todaysDate].removeAt(index);
       Exercise.updateExerciseCount();
 
       for (int i = index; i < widget.dataSet[todaysDate].length; i++)
-        widget.dataSet[todaysDate][i].index--;
+        widget.dataSet[todaysDate][i].id--;
     });
   }
 

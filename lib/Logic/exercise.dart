@@ -5,14 +5,13 @@ import '../Enums/workout.dart';
 
 class Exercise {
   static int excerciseCount = 0;
-  int index;
-  final setList = Map<int, List>();
-  final Workout workout;
-  final ColorTheme theme;
-  final Icon icon;
+  int id;
+  var setList = Map<int, List>();
+  Workout workout;
+  ColorTheme theme;
+  Icon icon;
 
-  Exercise({this.workout, this.theme, this.icon}) {
-    this.index = excerciseCount;
+  Exercise({this.id, this.workout, this.theme, this.icon}) {
     excerciseCount++;
   }
 
@@ -28,15 +27,21 @@ class Exercise {
     excerciseCount--;
   }
 
-  int getSetCount(){
+  int getSetCount() {
     return this.setList.length;
   }
 
-  int getReps(int set){
+  int getReps(int set) {
     return setList[set][0];
   }
 
-  int getWeight(int set){
+  int getWeight(int set) {
     return setList[set][1];
+  }
+
+  @override
+  String toString() {
+    // TODO: implement toString
+    return "$id $workout $theme";
   }
 }

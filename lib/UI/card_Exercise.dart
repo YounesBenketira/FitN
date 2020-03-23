@@ -163,16 +163,24 @@ class _ExerciseCardState extends State<ExerciseCard> {
           alignment: Alignment.topLeft,
           child: Row(
             children: <Widget>[
-              Container(height: 65, child: Container(width: 75, child: widget._icon)),
+              Container(
+                  height: 65, child: Container(width: 75, child: widget._icon)),
               Container(
                 width: 5,
               ),
-              Text(
-                widget._title,
-                style: TextStyle(
-                    fontSize: 25,
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold),
+              Container(
+                width: 150,
+                height: 35,
+                child: FittedBox(
+                  alignment: Alignment.centerLeft,
+                    fit: BoxFit.contain,
+                    child: Text(
+                      widget._title,
+                      style: TextStyle(
+                          fontSize: 25,
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold),
+                    )),
               ),
             ],
           )),
@@ -219,9 +227,10 @@ class _ExerciseCardState extends State<ExerciseCard> {
                       onPressed: () {
                         setState(() {
                           if (widget.exercise.setList.length == 0)
-                            widget.deleteExercise(widget.exercise.index);
+                            widget.deleteExercise(widget.exercise.id);
                           else
-                            widget.exercise.removeSet(widget.exercise.getSetCount()-1);
+                            widget.exercise
+                                .removeSet(widget.exercise.getSetCount() - 1);
 
                           widget.updateSets();
                         });
@@ -446,7 +455,7 @@ class _ExerciseCardState extends State<ExerciseCard> {
                       fontWeight: FontWeight.bold,
                       color: Colors.white),
                 ),
-                  )),
+              )),
               Padding(
                 padding: const EdgeInsets.only(left: 6, right: 6),
                 child: Container(
@@ -456,15 +465,15 @@ class _ExerciseCardState extends State<ExerciseCard> {
               ),
               Expanded(
                   child: Center(
-                    child: Text(
-                      "$weight",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.normal,
-                          color: Colors.white),
-                    ),
-                  )),
+                child: Text(
+                  "$weight",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.normal,
+                      color: Colors.white),
+                ),
+              )),
             ],
           ),
         ),
