@@ -1,13 +1,11 @@
-import 'package:fit_k/Logic/controller_data.dart';
 import 'package:flutter/material.dart';
 
-import 'package:fit_k/Enums/cardTheme.dart';
-import 'package:fit_k/Enums/workout.dart';
-import 'package:fit_k/Logic/exercise.dart';
 import 'package:fit_k/Pages/page_calendar.dart';
 import 'package:fit_k/Pages/page_home.dart';
 import 'package:fit_k/Pages/page_profile.dart';
 import 'package:fit_k/Pages/page_statistics.dart';
+
+import 'Logic/data_storage.dart';
 
 void main() => runApp(MyApp());
 
@@ -16,21 +14,20 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'FitK',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
       home: MyHomePage(
-        title: 'FitK',
+        storage: Storage(),
       ),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
+  final Storage storage;
 
-  final String title;
+  MyHomePage({Key key, @required this.storage}) : super(key: key);
 
   @override
   _MyHomePageState createState() => _MyHomePageState();
@@ -50,51 +47,28 @@ class _MyHomePageState extends State<MyHomePage> {
   List<Widget> pages; // List of all pages
   Widget currentPage; // Current Selected Page
 
-  Map<DateTime, List<Exercise>> dataList;
-  DataController dataController;
-
   final PageStorageBucket bucket = PageStorageBucket();
+  List<Map<String, dynamic>> dataList;
+  Storage _storage;
 
   @override
   void initState() {
+    _storage = Storage();
+
     DateTime now = new DateTime.now();
     DateTime todaysDate = new DateTime(now.year, now.month, now.day);
 
-
-    dataList = {
-      todaysDate: [
-        Exercise(
-          id: 0,
-          workout: Workout.Bench,
-          theme: ColorTheme.Blue,
-        ),
-        Exercise(
-          id: 1,
-          workout: Workout.Squat,
-          theme: ColorTheme.Yellow,
-        ),
-        Exercise(
-          id: 2,
-          workout: Workout.OverHeadPress,
-          theme: ColorTheme.Purple,
-        ),
-        Exercise(
-          id: 3,
-          workout: Workout.BentOverRow,
-          theme: ColorTheme.Peach,
-        ),
-        Exercise(
-          id: 4,
-          workout: Workout.Deadlift,
-          theme: ColorTheme.Green,
-        ),
-      ],
-    };
-
+    dataList = [
+      {
+        'date': todaysDate.toIso8601String(),
+        'exercises': [],
+      }
+    ];
 
     homePage = HomePage(
       key: homeKey,
       dataSet: dataList,
+      dateIndex: 0,
     );
     calendarPage = CalendarPage(
       key: calendarKey,

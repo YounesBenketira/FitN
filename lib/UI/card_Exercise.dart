@@ -1,4 +1,5 @@
 import 'package:fit_k/Enums/cardTheme.dart';
+import 'package:fit_k/Logic/data_storage.dart';
 import 'package:flutter/material.dart';
 
 import '../Enums/workout.dart';
@@ -72,11 +73,14 @@ class ExerciseCard extends StatefulWidget {
 class _ExerciseCardState extends State<ExerciseCard> {
   TextEditingController _repController;
   TextEditingController _weightController;
+  Storage _storage;
 
   @override
   void initState() {
     _repController = new TextEditingController();
     _weightController = new TextEditingController();
+
+    _storage = Storage();
 
     super.initState();
   }
@@ -172,7 +176,7 @@ class _ExerciseCardState extends State<ExerciseCard> {
                 width: 150,
                 height: 35,
                 child: FittedBox(
-                  alignment: Alignment.centerLeft,
+                    alignment: Alignment.centerLeft,
                     fit: BoxFit.contain,
                     child: Text(
                       widget._title,
@@ -228,12 +232,13 @@ class _ExerciseCardState extends State<ExerciseCard> {
                         setState(() {
                           if (widget.exercise.setList.length == 0)
                             widget.deleteExercise(widget.exercise.id);
-                          else
+                          else {
                             widget.exercise
                                 .removeSet(widget.exercise.getSetCount() - 1);
-
-                          widget.updateSets();
+                            _storage.removeSet(widget.exercise);
+                          }
                         });
+                        widget.updateSets();
                         Navigator.of(context).pop();
                       },
                       child: Text(
@@ -380,9 +385,14 @@ class _ExerciseCardState extends State<ExerciseCard> {
                           int reps = int.parse(_repController.text);
                           int weight = int.parse(_weightController.text);
 
+//                          print("before " + widget.exercise.toString());
                           widget.exercise.addSet(reps, weight);
-                          widget.updateSets();
+
+//                          print("after " + widget.exercise.toString());
+                          _storage.saveSet(widget.exercise);
+
                         });
+                        widget.updateSets();
                         Navigator.of(context).pop();
                       },
                       child: Text(
@@ -480,31 +490,85 @@ class _ExerciseCardState extends State<ExerciseCard> {
       );
     }
 
-    List setLog = new List();
-    for (int i = 0; i < widget.exercise.setList.length; i++) {
-      int reps = widget.exercise.getReps(i);
-      int weight = widget.exercise.getWeight(i);
-      setLog.add(Set(reps, weight));
+    Widget createListView(BuildContext context, AsyncSnapshot snapshot) {
+      Map<String, dynamic> values;
+      if (snapshot.data.length == 0)
+        values = {};
+      else
+        values = snapshot.data;
+
+      return Padding(
+        padding: const EdgeInsets.only(left: 83.0, top: 58, right: 14),
+        child: Container(
+          height: 72,
+          width: double.infinity,
+          decoration: BoxDecoration(
+            color: Colors.white.withOpacity(0.25),
+            borderRadius: BorderRadius.all(Radius.circular(8)),
+          ),
+          child: new ListView.builder(
+            primary: true,
+            shrinkWrap: true,
+            scrollDirection: Axis.horizontal,
+            itemCount: values.length,
+            itemBuilder: (BuildContext context, int index) {
+//              print(values);
+              return new Row(
+                children: <Widget>[
+                  Set(values[index.toString()][0], values[index.toString()][1]),
+                ],
+              );
+            },
+          ),
+        ),
+      );
     }
 
-    return Padding(
-      padding: const EdgeInsets.only(top: 55, left: 80, right: 22),
-      child: Container(
-        height: 75,
-        width: double.infinity,
-        decoration: BoxDecoration(
-          color: Colors.white.withOpacity(0.25),
-          borderRadius: BorderRadius.all(Radius.circular(8)),
-        ),
-        child: ListView(
-          scrollDirection: Axis.horizontal,
-          children: <Widget>[
-            ...setLog.map((entry) {
-              return entry;
-            }).toList(),
-          ],
-        ),
-      ),
+    Future _getData() async {
+      var data = await _storage.readData();
+
+      Exercise exercise =
+          Exercise.fromJson(data[0]['exercises'][widget.exercise.id]);
+//    await new Future.delayed(new Duration(microseconds: 1));
+      return exercise.setList;
+    }
+
+    var futureBuilder = new FutureBuilder(
+      future: _getData(),
+      builder: (BuildContext context, AsyncSnapshot snapshot) {
+        switch (snapshot.connectionState) {
+          case ConnectionState.none:
+          case ConnectionState.waiting:
+            return new Text('');
+          default:
+            if (snapshot.hasError)
+              return new Text('Error: ${snapshot.error}');
+            else
+              return createListView(context, snapshot);
+        }
+      },
     );
+
+    return futureBuilder;
+
+    //    return Padding(
+//      padding: const EdgeInsets.only(top: 55, left: 80, right: 22),
+//      child: Container(
+//        height: 75,
+//        width: double.infinity,
+//        decoration: BoxDecoration(
+//          color: Colors.white.withOpacity(0.25),
+//          borderRadius: BorderRadius.all(Radius.circular(8)),
+//        ),
+//        child: ListView(
+//          scrollDirection: Axis.horizontal,
+//          children: <Widget>[
+//            ...setLog.map((entry) {
+//              return entry;
+//            }).toList(),
+//          ],
+//        ),
+//      ),
+//    );
   }
 }

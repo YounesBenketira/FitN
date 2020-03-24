@@ -4,7 +4,7 @@ import 'package:fit_k/Logic/exercise.dart';
 import 'package:flutter/material.dart';
 
 class ExerciseCreationPopup extends StatefulWidget {
-  List<Exercise> exerciseList;
+  List<dynamic> exerciseList;
   Function addExercise;
 
   ExerciseCreationPopup({this.exerciseList, this.addExercise});

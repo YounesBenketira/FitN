@@ -1,3 +1,4 @@
+import 'package:fit_k/Logic/data_storage.dart';
 import 'package:fit_k/Logic/exercise.dart';
 import 'package:fit_k/UI/popup_AddExercise.dart';
 import 'package:fit_k/UI/card_Exercise.dart';
@@ -16,21 +17,24 @@ import 'package:intl/intl.dart';
  */
 
 class HomePage extends StatefulWidget {
-  final Map<DateTime, List<Exercise>> dataSet;
+  final List<Map> dataSet;
+  final int dateIndex;
 
-  HomePage({Key key, this.dataSet}) : super(key: key);
+  HomePage({Key key, this.dataSet, this.dateIndex}) : super(key: key);
 
   @override
   _HomePageState createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
+  Storage storage;
   DateTime todaysDate;
   String formattedDate;
   int setsDone;
 
   @override
   void initState() {
+    storage = Storage();
     var now = new DateTime.now();
     todaysDate = new DateTime(now.year, now.month, now.day);
 
@@ -42,31 +46,48 @@ class _HomePageState extends State<HomePage> {
   }
 
   void updateSets() {
-    int setCount = 0;
-    for (int i = 0; i < widget.dataSet[todaysDate].length; i++) {
-      int sets = widget.dataSet[todaysDate][i].getSetCount();
+    storage.readData().then((List<dynamic> data) {
+      print(data);
+      List<dynamic> exerciseList;
+      if(data.length == 0)
+        exerciseList = new List();
+      else
+        exerciseList = data[widget.dateIndex]['exercises'];
 
-      setCount += sets;
-    }
-    setState(() {
-      setsDone = setCount;
+      int setCount = 0;
+      for(int i = 0; i < exerciseList.length; i++){
+        int sets = Exercise.fromJson(exerciseList[i]).getSetCount();
+        setCount += sets;
+      }
+
+      print("before " + setsDone.toString());
+      setState(() {
+        setsDone = setCount;
+        print("after " + setsDone.toString());
+      });
     });
   }
 
+  // @TODO Edit data
   void removeExercise(int index) {
-    print(index);
+//    print(index);
     setState(() {
-      widget.dataSet[todaysDate].removeAt(index);
+      widget.dataSet[widget.dateIndex]['exercises'].removeAt(index);
       Exercise.updateExerciseCount();
 
-      for (int i = index; i < widget.dataSet[todaysDate].length; i++)
-        widget.dataSet[todaysDate][i].id--;
+      for (int i = index; i < widget.dataSet[0]['exercises'].length; i++)
+        widget.dataSet[0]['exercises'][i].id--;
+
+      storage.save(widget.dataSet);
     });
   }
 
+  // @TODO Edit data
   void addExercise(Exercise ex) {
     setState(() {
-      widget.dataSet[todaysDate].add(ex);
+      widget.dataSet[0]['exercises'].add(ex);
+
+      storage.save(widget.dataSet);
     });
   }
 
@@ -142,7 +163,7 @@ class _HomePageState extends State<HomePage> {
                   ),
                   child: Center(
                     child: Text(
-                      "${widget.dataSet[todaysDate].length} Exercises",
+                      "${widget.dataSet[0]['exercises'].length} Exercises",
                       style: TextStyle(
                         color: Colors.lightBlueAccent,
                         fontWeight: FontWeight.bold,
@@ -192,7 +213,6 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _buildAddBtn() {
-
     return Padding(
       padding: const EdgeInsets.only(left: 15.0, right: 15.0, bottom: 5),
       child: Container(
@@ -206,7 +226,7 @@ class _HomePageState extends State<HomePage> {
               context: context,
               builder: (context) {
                 return ExerciseCreationPopup(
-                  exerciseList: widget.dataSet[todaysDate],
+                  exerciseList: widget.dataSet[0]['exercises'],
                   addExercise: addExercise,
                 );
               },
@@ -217,21 +237,63 @@ class _HomePageState extends State<HomePage> {
             style: TextStyle(color: Colors.white, fontSize: 25),
           ),
           shape:
-          RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
         ),
       ),
     );
   }
 
   Widget _buildExerciseList() {
-    return Column(
-      children: widget.dataSet[todaysDate].map((entry) {
-        return ExerciseCard(
-          exercise: entry,
-          deleteExercise: removeExercise,
-          updateSets: updateSets,
-        );
-      }).toList(),
+    Widget createListView(BuildContext context, AsyncSnapshot snapshot) {
+
+      List<dynamic> values;
+      if(snapshot.data.length == 0)
+        values = [];
+      else
+        values = snapshot.data[widget.dateIndex]['exercises'];
+//      print(snapshot.data[0]['exercises']);
+
+      return new ListView.builder(
+        primary: false,
+        shrinkWrap: true,
+        itemCount: values.length,
+        itemBuilder: (BuildContext context, int index) {
+//          print(values);
+          return new Column(
+            children: <Widget>[
+              ExerciseCard(
+                exercise: Exercise.fromJson(values[index]),
+                deleteExercise: removeExercise,
+                updateSets: updateSets,
+              ),
+            ],
+          );
+        },
+      );
+    }
+
+    Future _getData() async {
+      var data = await storage.readData();
+//    await new Future.delayed(new Duration(microseconds: 1));
+      return data;
+    }
+
+    var futureBuilder = new FutureBuilder(
+      future: _getData(),
+      builder: (BuildContext context, AsyncSnapshot snapshot) {
+        switch (snapshot.connectionState) {
+          case ConnectionState.none:
+          case ConnectionState.waiting:
+            return new Text('');
+          default:
+            if (snapshot.hasError)
+              return new Text('Error: ${snapshot.error}');
+            else
+              return createListView(context, snapshot);
+        }
+      },
     );
+
+    return futureBuilder;
   }
 }
