@@ -83,6 +83,7 @@ class _ExcerciseDialogueAdd extends State<ExerciseCreationPopup> {
     });
   }
 
+
   @override
   void initState() {
     _workoutMenuItems = _buildWorkoutMenuItems(workoutList);

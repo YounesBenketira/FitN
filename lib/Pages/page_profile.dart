@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 
 class ProfilePage extends StatefulWidget {
-  List<Map> dataSet;
 
-  ProfilePage({Key key, this.dataSet}) : super(key: key);
+  ProfilePage({Key key}) : super(key: key);
 
   @override
   _ProfilePageState createState() => _ProfilePageState();
@@ -21,7 +20,7 @@ class _ProfilePageState extends State<ProfilePage> {
       color: Colors.green,
       child: Center(
         child: Text(
-          widget.dataSet[0]['exercises'].length.toString(),
+          "Profile",
           style: TextStyle(fontSize: 60),
         ),
       ),

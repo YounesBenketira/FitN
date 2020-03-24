@@ -14,9 +14,6 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
       home: MyHomePage(
         storage: Storage(),
       ),
@@ -48,7 +45,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget currentPage; // Current Selected Page
 
   final PageStorageBucket bucket = PageStorageBucket();
-  List<Map<String, dynamic>> dataList;
+  List<dynamic> dataList;
   Storage _storage;
 
   @override
@@ -58,29 +55,23 @@ class _MyHomePageState extends State<MyHomePage> {
     DateTime now = new DateTime.now();
     DateTime todaysDate = new DateTime(now.year, now.month, now.day);
 
-    dataList = [
-      {
-        'date': todaysDate.toIso8601String(),
-        'exercises': [],
-      }
-    ];
-
     homePage = HomePage(
       key: homeKey,
       dataSet: dataList,
       dateIndex: 0,
     );
+
     calendarPage = CalendarPage(
       key: calendarKey,
       dataSet: dataList,
     );
+
     statisticsPage = StatisticsPage(
       key: statisticsKey,
-      dataSet: dataList,
     );
+
     profilePage = ProfilePage(
       key: profileKey,
-      dataSet: dataList,
     );
 
     pages = [homePage, calendarPage, statisticsPage, profilePage];
@@ -93,6 +84,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       body: PageStorage(
         child: currentPage,

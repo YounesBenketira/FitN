@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 
 class StatisticsPage extends StatefulWidget {
-  List<Map> dataSet;
-
-  StatisticsPage({Key key, this.dataSet}) : super(key: key);
+  StatisticsPage({Key key}) : super(key: key);
 
   @override
   _StatisticsPageState createState() => _StatisticsPageState();
@@ -21,7 +19,7 @@ class _StatisticsPageState extends State<StatisticsPage> {
       color: Colors.red,
       child: Center(
         child: Text(
-          widget.dataSet[0]['exercises'].length.toString(),
+          "Statistics",
           style: TextStyle(fontSize: 60),
         ),
       ),

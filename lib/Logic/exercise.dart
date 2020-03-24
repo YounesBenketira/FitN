@@ -60,6 +60,6 @@ class Exercise {
   @override
   String toString() {
     // TODO: implement toString
-    return "$id $workout $theme $setList";
+    return toJson().toString();
   }
 }

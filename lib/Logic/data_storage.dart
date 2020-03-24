@@ -33,34 +33,33 @@ class Storage {
 
   Future<File> writeData(String data) async {
     final file = await localFile;
-    return file.writeAsString("$data");
+
+    return await file.writeAsString("$data");
   }
 
-  void save(var data){
+  void save(var data) async {
     String jsonData = jsonEncode(data);
-    writeData(jsonData);
+    await writeData(jsonData);
   }
 
-  void saveSet(Exercise exercise){
-    readData().then((var data){
+  void saveSet(Exercise exercise, Function func) async {
+    return await readData().then((var data) async{
 //      print(data);
+      List<dynamic> dataHolder = data;
+      for(int i = 0; i < dataHolder.length; i++)
+        if(dataHolder[i]['date'] == todaysDate.toIso8601String()){
+          Map<String, dynamic> setList = dataHolder[i]['exercises'][exercise.id]['setList'];
 
-      for(int i = 0; i < data.length; i++)
-        if(data[i]['date'] == todaysDate.toIso8601String()){
-          Map<String, dynamic> setList = data[i]['exercises'][exercise.id]['setList'];
           String setListKey = (exercise.setList.length-1).toString();
-          data[i]['exercises'][exercise.id]['setList'].putIfAbsent(setList.length.toString(), () => [exercise.setList[setListKey][0], exercise.setList[setListKey][1]]);
+          setList.putIfAbsent(setList.length.toString(), () => [exercise.setList[setListKey][0], exercise.setList[setListKey][1]]);
+
+          await writeData(jsonEncode(data));
         }
-//      print(data);
-
-      writeData(jsonEncode(data));
+      func();
     });
-
-//    String jsonData = jsonEncode(data);
-//    writeData(jsonData);
   }
 
-  void removeSet(Exercise exercise){
+  void removeSet(Exercise exercise, Function updateSetCount){
     readData().then((var data){
       for(int i = 0; i < data.length; i++)
         if(data[i]['date'] == todaysDate.toIso8601String()){
@@ -70,6 +69,7 @@ class Storage {
 //          print("after " + data.toString());
         }
       writeData(jsonEncode(data));
+      updateSetCount();
     });
   }
 

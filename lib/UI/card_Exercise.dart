@@ -230,15 +230,16 @@ class _ExerciseCardState extends State<ExerciseCard> {
                       color: Colors.red,
                       onPressed: () {
                         setState(() {
+//                          print(widget.exercise.id);
                           if (widget.exercise.setList.length == 0)
                             widget.deleteExercise(widget.exercise.id);
                           else {
                             widget.exercise
                                 .removeSet(widget.exercise.getSetCount() - 1);
-                            _storage.removeSet(widget.exercise);
+                            _storage.removeSet(widget.exercise, widget.updateSets);
                           }
                         });
-                        widget.updateSets();
+//                        widget.updateSets();
                         Navigator.of(context).pop();
                       },
                       child: Text(
@@ -385,14 +386,13 @@ class _ExerciseCardState extends State<ExerciseCard> {
                           int reps = int.parse(_repController.text);
                           int weight = int.parse(_weightController.text);
 
-//                          print("before " + widget.exercise.toString());
-                          widget.exercise.addSet(reps, weight);
+                          widget.exercise.setList.putIfAbsent(
+                              widget.exercise.setList.length.toString(),
+                              () => [reps, weight]);
 
-//                          print("after " + widget.exercise.toString());
-                          _storage.saveSet(widget.exercise);
-
+                          _storage.saveSet(widget.exercise, widget.updateSets);
                         });
-                        widget.updateSets();
+
                         Navigator.of(context).pop();
                       },
                       child: Text(
@@ -498,7 +498,7 @@ class _ExerciseCardState extends State<ExerciseCard> {
         values = snapshot.data;
 
       return Padding(
-        padding: const EdgeInsets.only(left: 83.0, top: 58, right: 14),
+        padding: const EdgeInsets.only(left: 83.0, top: 58, right: 20),
         child: Container(
           height: 72,
           width: double.infinity,

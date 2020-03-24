@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:fit_k/Logic/data_storage.dart';
 import 'package:fit_k/Logic/exercise.dart';
 import 'package:fit_k/UI/popup_AddExercise.dart';
@@ -17,7 +19,7 @@ import 'package:intl/intl.dart';
  */
 
 class HomePage extends StatefulWidget {
-  final List<Map> dataSet;
+  List<dynamic> dataSet;
   final int dateIndex;
 
   HomePage({Key key, this.dataSet, this.dateIndex}) : super(key: key);
@@ -31,10 +33,15 @@ class _HomePageState extends State<HomePage> {
   DateTime todaysDate;
   String formattedDate;
   int setsDone;
+  int excCount;
+
+
 
   @override
   void initState() {
     storage = Storage();
+    _updateDataSet();
+
     var now = new DateTime.now();
     todaysDate = new DateTime(now.year, now.month, now.day);
 
@@ -45,50 +52,74 @@ class _HomePageState extends State<HomePage> {
     super.initState();
   }
 
-  void updateSets() {
-    storage.readData().then((List<dynamic> data) {
-      print(data);
+  void updateSets() async {
+    Future data = _getData();
+    data.then((var data) {
       List<dynamic> exerciseList;
-      if(data.length == 0)
+      if (data.length == 0)
         exerciseList = new List();
       else
         exerciseList = data[widget.dateIndex]['exercises'];
 
       int setCount = 0;
-      for(int i = 0; i < exerciseList.length; i++){
+      for (int i = 0; i < exerciseList.length; i++) {
         int sets = Exercise.fromJson(exerciseList[i]).getSetCount();
         setCount += sets;
       }
 
-      print("before " + setsDone.toString());
       setState(() {
         setsDone = setCount;
-        print("after " + setsDone.toString());
+        excCount = exerciseList.length;
+      });
+//      widget.dataSet = data;
+    });
+  }
+
+  void _updateDataSet() {
+    Future<List<dynamic>> future = storage.readData();
+
+    future.then((var data){
+      setState(() {
+        widget.dataSet = data;
       });
     });
   }
 
-  // @TODO Edit data
   void removeExercise(int index) {
-//    print(index);
-    setState(() {
-      widget.dataSet[widget.dateIndex]['exercises'].removeAt(index);
-      Exercise.updateExerciseCount();
+      List<dynamic> exerciseList = widget.dataSet[widget.dateIndex]['exercises'];
+      setState(() {
+        exerciseList.removeAt(index);
+      });
 
-      for (int i = index; i < widget.dataSet[0]['exercises'].length; i++)
-        widget.dataSet[0]['exercises'][i].id--;
+      for(int i = index; i < exerciseList.length; i++)
+        exerciseList[i].id--;
 
+      excCount--;
       storage.save(widget.dataSet);
-    });
   }
 
-  // @TODO Edit data
   void addExercise(Exercise ex) {
     setState(() {
-      widget.dataSet[0]['exercises'].add(ex);
+      excCount++;
 
-      storage.save(widget.dataSet);
+      if(widget.dataSet.length == 0)
+        widget.dataSet.add(
+            {
+              'date': todaysDate.toIso8601String(),
+              'exercises': [ex]
+            }
+        );
+      else
+        widget.dataSet[0]['exercises'].add(ex);
+
     });
+    storage.save(widget.dataSet);
+  }
+
+  Future _getData() async {
+    var data = await storage.readData();
+//    await new Future.delayed(new Duration(microseconds: 1));
+    return data;
   }
 
   @override
@@ -163,7 +194,7 @@ class _HomePageState extends State<HomePage> {
                   ),
                   child: Center(
                     child: Text(
-                      "${widget.dataSet[0]['exercises'].length} Exercises",
+                      "$excCount Exercises",
                       style: TextStyle(
                         color: Colors.lightBlueAccent,
                         fontWeight: FontWeight.bold,
@@ -225,8 +256,11 @@ class _HomePageState extends State<HomePage> {
             showDialog(
               context: context,
               builder: (context) {
+                List<dynamic> exerciseList = new List();
+                if(widget.dataSet.length != 0)
+                  exerciseList = widget.dataSet[widget.dateIndex]['exercises'];
                 return ExerciseCreationPopup(
-                  exerciseList: widget.dataSet[0]['exercises'],
+                  exerciseList: exerciseList,
                   addExercise: addExercise,
                 );
               },
@@ -245,9 +279,8 @@ class _HomePageState extends State<HomePage> {
 
   Widget _buildExerciseList() {
     Widget createListView(BuildContext context, AsyncSnapshot snapshot) {
-
       List<dynamic> values;
-      if(snapshot.data.length == 0)
+      if (snapshot.data.length == 0)
         values = [];
       else
         values = snapshot.data[widget.dateIndex]['exercises'];
@@ -270,12 +303,6 @@ class _HomePageState extends State<HomePage> {
           );
         },
       );
-    }
-
-    Future _getData() async {
-      var data = await storage.readData();
-//    await new Future.delayed(new Duration(microseconds: 1));
-      return data;
     }
 
     var futureBuilder = new FutureBuilder(
