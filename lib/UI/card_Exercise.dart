@@ -230,13 +230,14 @@ class _ExerciseCardState extends State<ExerciseCard> {
                       color: Colors.red,
                       onPressed: () {
                         setState(() {
-//                          print(widget.exercise.id);
+                          int id = widget.exercise.id;
                           if (widget.exercise.setList.length == 0)
-                            widget.deleteExercise(widget.exercise.id);
+                            widget.deleteExercise(id);
                           else {
                             widget.exercise
                                 .removeSet(widget.exercise.getSetCount() - 1);
-                            _storage.removeSet(widget.exercise, widget.updateSets);
+                            _storage.removeSet(
+                                widget.exercise, widget.updateSets);
                           }
                         });
 //                        widget.updateSets();
@@ -447,6 +448,68 @@ class _ExerciseCardState extends State<ExerciseCard> {
   }
 
   Widget _buildSetLog() {
+//
+//    Widget createListView(BuildContext context, AsyncSnapshot snapshot) {
+//      Map<String, dynamic> values;
+//      if (snapshot.data.length == 0)
+//        values = {};
+//      else
+//        values = snapshot.data;
+//
+//      return Padding(
+//        padding: const EdgeInsets.only(left: 83.0, top: 58, right: 20),
+//        child: Container(
+//          height: 72,
+//          width: double.infinity,
+//          decoration: BoxDecoration(
+//            color: Colors.white.withOpacity(0.25),
+//            borderRadius: BorderRadius.all(Radius.circular(8)),
+//          ),
+//          child: new ListView.builder(
+//            primary: true,
+//            shrinkWrap: true,
+//            scrollDirection: Axis.horizontal,
+//            itemCount: values.length,
+//            itemBuilder: (BuildContext context, int index) {
+////              print(values);
+//              return new Row(
+//                children: <Widget>[
+//                  Set(values[index.toString()][0], values[index.toString()][1]),
+//                ],
+//              );
+//            },
+//          ),
+//        ),
+//      );
+//    }
+//
+//    Future _getData() async {
+//      var data = await _storage.readData();
+//
+//      Exercise exercise =
+//          Exercise.fromJson(data[0]['exercises'][widget.exercise.id]);
+////    await new Future.delayed(new Duration(microseconds: 1));
+//      return exercise.setList;
+//    }
+//
+//    var futureBuilder = new FutureBuilder(
+//      future: _getData(),
+//      builder: (BuildContext context, AsyncSnapshot snapshot) {
+//        switch (snapshot.connectionState) {
+//          case ConnectionState.none:
+//          case ConnectionState.waiting:
+//            return new Text('');
+//          default:
+//            if (snapshot.hasError)
+//              return new Text('Error: ${snapshot.error}');
+//            else
+//              return createListView(context, snapshot);
+//        }
+//      },
+//    );
+//
+//    return futureBuilder;
+
     Widget Set(int rep, int weight) {
       return Padding(
         padding: const EdgeInsets.only(left: 2.0),
@@ -490,85 +553,30 @@ class _ExerciseCardState extends State<ExerciseCard> {
       );
     }
 
-    Widget createListView(BuildContext context, AsyncSnapshot snapshot) {
-      Map<String, dynamic> values;
-      if (snapshot.data.length == 0)
-        values = {};
-      else
-        values = snapshot.data;
+    List<Widget> setList = new List();
+    for (int i = 0; i < widget.exercise.setList.length; i++) {
+      setList.add(Set(widget.exercise.setList[i.toString()][0],
+          widget.exercise.setList[i.toString()][1]));
+    }
 
-      return Padding(
-        padding: const EdgeInsets.only(left: 83.0, top: 58, right: 20),
-        child: Container(
-          height: 72,
-          width: double.infinity,
-          decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.25),
-            borderRadius: BorderRadius.all(Radius.circular(8)),
-          ),
-          child: new ListView.builder(
-            primary: true,
-            shrinkWrap: true,
-            scrollDirection: Axis.horizontal,
-            itemCount: values.length,
-            itemBuilder: (BuildContext context, int index) {
-//              print(values);
-              return new Row(
-                children: <Widget>[
-                  Set(values[index.toString()][0], values[index.toString()][1]),
-                ],
-              );
-            },
-          ),
+    return Padding(
+      padding: const EdgeInsets.only(top: 55, left: 80, right: 22),
+      child: Container(
+        height: 75,
+        width: double.infinity,
+        decoration: BoxDecoration(
+          color: Colors.white.withOpacity(0.25),
+          borderRadius: BorderRadius.all(Radius.circular(8)),
         ),
-      );
-    }
-
-    Future _getData() async {
-      var data = await _storage.readData();
-
-      Exercise exercise =
-          Exercise.fromJson(data[0]['exercises'][widget.exercise.id]);
-//    await new Future.delayed(new Duration(microseconds: 1));
-      return exercise.setList;
-    }
-
-    var futureBuilder = new FutureBuilder(
-      future: _getData(),
-      builder: (BuildContext context, AsyncSnapshot snapshot) {
-        switch (snapshot.connectionState) {
-          case ConnectionState.none:
-          case ConnectionState.waiting:
-            return new Text('');
-          default:
-            if (snapshot.hasError)
-              return new Text('Error: ${snapshot.error}');
-            else
-              return createListView(context, snapshot);
-        }
-      },
+        child: ListView(
+          scrollDirection: Axis.horizontal,
+          children: <Widget>[
+            ...setList.map((entry) {
+              return entry;
+            }).toList(),
+          ],
+        ),
+      ),
     );
-
-    return futureBuilder;
-
-    //    return Padding(
-//      padding: const EdgeInsets.only(top: 55, left: 80, right: 22),
-//      child: Container(
-//        height: 75,
-//        width: double.infinity,
-//        decoration: BoxDecoration(
-//          color: Colors.white.withOpacity(0.25),
-//          borderRadius: BorderRadius.all(Radius.circular(8)),
-//        ),
-//        child: ListView(
-//          scrollDirection: Axis.horizontal,
-//          children: <Widget>[
-//            ...setLog.map((entry) {
-//              return entry;
-//            }).toList(),
-//          ],
-//        ),
-//      ),
-//    );
   }
 }

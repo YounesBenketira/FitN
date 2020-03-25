@@ -1,9 +1,7 @@
-import 'dart:convert';
-
 import 'package:fit_k/Logic/data_storage.dart';
 import 'package:fit_k/Logic/exercise.dart';
-import 'package:fit_k/UI/popup_AddExercise.dart';
 import 'package:fit_k/UI/card_Exercise.dart';
+import 'package:fit_k/UI/popup_AddExercise.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -20,9 +18,8 @@ import 'package:intl/intl.dart';
 
 class HomePage extends StatefulWidget {
   List<dynamic> dataSet;
-  final int dateIndex;
 
-  HomePage({Key key, this.dataSet, this.dateIndex}) : super(key: key);
+  HomePage({Key key, this.dataSet}) : super(key: key);
 
   @override
   _HomePageState createState() => _HomePageState();
@@ -31,19 +28,22 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   Storage storage;
   DateTime todaysDate;
+  DateTime yesterdaysDate;
   String formattedDate;
   int setsDone;
   int excCount;
-
-
+  int dateIndex;
+  int yesterIndex;
 
   @override
   void initState() {
     storage = Storage();
     _updateDataSet();
-
+    getDateIndex();
     var now = new DateTime.now();
     todaysDate = new DateTime(now.year, now.month, now.day);
+    yesterdaysDate =
+        new DateTime(now.year, now.month, now.subtract(Duration(days: 1)).day);
 
     var formatter = new DateFormat.yMMMMd('en_US');
     formattedDate = formatter.format(todaysDate);
@@ -52,14 +52,39 @@ class _HomePageState extends State<HomePage> {
     super.initState();
   }
 
-  void updateSets() async {
+  void getDateIndex() {
+    Future data = _getData();
+    data.then((var value) {
+      List<dynamic> dataSet = value;
+
+      for (int i = 0; i < dataSet.length; i++)
+        if (DateTime.parse(dataSet[i]['date']) == todaysDate)
+          setState(() {
+            dateIndex = i;
+            yesterIndex = dateIndex + 1;
+          });
+
+      if (dateIndex == null) {
+        dataSet.add({'date': todaysDate.toIso8601String(), 'exercises': []});
+        setState(() {
+          dateIndex = dataSet.length - 1;
+          yesterIndex = dateIndex + 1;
+        });
+      }
+    });
+  }
+
+  void updateSets() {
     Future data = _getData();
     data.then((var data) {
       List<dynamic> exerciseList;
+
       if (data.length == 0)
         exerciseList = new List();
-      else
-        exerciseList = data[widget.dateIndex]['exercises'];
+      else {
+        if (dateIndex == null) dateIndex = data.length - 1;
+        exerciseList = data[dateIndex]['exercises'];
+      }
 
       int setCount = 0;
       for (int i = 0; i < exerciseList.length; i++) {
@@ -71,14 +96,13 @@ class _HomePageState extends State<HomePage> {
         setsDone = setCount;
         excCount = exerciseList.length;
       });
-//      widget.dataSet = data;
     });
   }
 
   void _updateDataSet() {
     Future<List<dynamic>> future = storage.readData();
 
-    future.then((var data){
+    future.then((var data) {
       setState(() {
         widget.dataSet = data;
       });
@@ -86,32 +110,65 @@ class _HomePageState extends State<HomePage> {
   }
 
   void removeExercise(int index) {
-      List<dynamic> exerciseList = widget.dataSet[widget.dateIndex]['exercises'];
-      setState(() {
-        exerciseList.removeAt(index);
-      });
+    List<dynamic> exerciseList = widget.dataSet[dateIndex]['exercises'];
+    setState(() {
+      exerciseList.removeAt(index);
+    });
 
-      for(int i = index; i < exerciseList.length; i++)
-        exerciseList[i].id--;
+//      print(exerciseList);
+//      print(exerciseList[0].runtimeType);
 
-      excCount--;
-      storage.save(widget.dataSet);
+    for (int i = index; i < exerciseList.length; i++) {
+      Exercise temp;
+      if (exerciseList[i].runtimeType == Exercise)
+        temp = exerciseList[i];
+      else
+        temp = Exercise.fromJson(exerciseList[i]);
+
+      temp.id--;
+      exerciseList[i] = temp.toJson();
+    }
+
+    excCount--;
+    storage.save(widget.dataSet);
+  }
+
+  void addExerciseYesterday(Exercise ex) {
+//    print("BEfore " + widget.dataSet.toString());
+    for (int i = 0; i < widget.dataSet.length; i++) {
+      if (DateTime.parse(widget.dataSet[i]['date']) == yesterdaysDate) {
+        ex.id = widget.dataSet[i]['exercises'].length;
+        widget.dataSet[yesterIndex]['exercises'].add(ex);
+        storage.save(widget.dataSet);
+        return;
+      }
+    }
+//    print("Middle " + widget.dataSet.toString());
+
+    ex.id = 0;
+    widget.dataSet.add({
+      'date': yesterdaysDate.toIso8601String(),
+      'exercises': [ex],
+    });
+
+//    print("End " + widget.dataSet.toString());
+    storage.save(widget.dataSet);
   }
 
   void addExercise(Exercise ex) {
     setState(() {
       excCount++;
 
-      if(widget.dataSet.length == 0)
-        widget.dataSet.add(
-            {
-              'date': todaysDate.toIso8601String(),
-              'exercises': [ex]
-            }
-        );
-      else
-        widget.dataSet[0]['exercises'].add(ex);
-
+      if (widget.dataSet.length == 0) {
+        ex.id = 0;
+        widget.dataSet.add({
+          'date': todaysDate.toIso8601String(),
+          'exercises': [ex]
+        });
+      } else {
+        ex.id = widget.dataSet[dateIndex]['exercises'].length;
+        widget.dataSet[dateIndex]['exercises'].add(ex);
+      }
     });
     storage.save(widget.dataSet);
   }
@@ -135,6 +192,14 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _buildDayInformation() {
+    String exerciseCounter = "  ";
+    if (excCount != null)
+      exerciseCounter = excCount.toString();
+
+    String setCounter = "  ";
+    if (setsDone != null)
+      setCounter = setsDone.toString();
+
     return Column(children: <Widget>[
       Padding(
         // Today's Date
@@ -159,13 +224,13 @@ class _HomePageState extends State<HomePage> {
           ),
           child: Center(
               child: Text(
-            formattedDate,
-            style: TextStyle(
-              fontSize: 28,
-              color: Colors.lightBlueAccent,
-              fontWeight: FontWeight.bold,
-            ),
-          )),
+                formattedDate,
+                style: TextStyle(
+                  fontSize: 28,
+                  color: Colors.lightBlueAccent,
+                  fontWeight: FontWeight.bold,
+                ),
+              )),
         ),
       ),
       Padding(
@@ -194,7 +259,7 @@ class _HomePageState extends State<HomePage> {
                   ),
                   child: Center(
                     child: Text(
-                      "$excCount Exercises",
+                      "$exerciseCounter Exercises",
                       style: TextStyle(
                         color: Colors.lightBlueAccent,
                         fontWeight: FontWeight.bold,
@@ -226,7 +291,7 @@ class _HomePageState extends State<HomePage> {
                   ),
                   child: Center(
                     child: Text(
-                      "$setsDone Sets",
+                      "$setCounter Sets",
                       style: TextStyle(
                         fontSize: 28,
                         color: Colors.lightBlueAccent,
@@ -257,11 +322,12 @@ class _HomePageState extends State<HomePage> {
               context: context,
               builder: (context) {
                 List<dynamic> exerciseList = new List();
-                if(widget.dataSet.length != 0)
-                  exerciseList = widget.dataSet[widget.dateIndex]['exercises'];
+                if (widget.dataSet.length != 0)
+                  exerciseList = widget.dataSet[dateIndex]['exercises'];
                 return ExerciseCreationPopup(
                   exerciseList: exerciseList,
                   addExercise: addExercise,
+//                  addExercise: addExerciseYesterday,
                 );
               },
             );
@@ -280,10 +346,13 @@ class _HomePageState extends State<HomePage> {
   Widget _buildExerciseList() {
     Widget createListView(BuildContext context, AsyncSnapshot snapshot) {
       List<dynamic> values;
+//      print(dateIndex);
+//      print(snapshot.data);
       if (snapshot.data.length == 0)
         values = [];
-      else
-        values = snapshot.data[widget.dateIndex]['exercises'];
+      else {
+        values = snapshot.data[dateIndex]['exercises'];
+      }
 //      print(snapshot.data[0]['exercises']);
 
       return new ListView.builder(
@@ -303,6 +372,23 @@ class _HomePageState extends State<HomePage> {
           );
         },
       );
+//      return new ListView.builder(
+//        primary: false,
+//        shrinkWrap: true,
+//        itemCount: values.length,
+//        itemBuilder: (BuildContext context, int index) {
+////          print(values);
+//          return new Column(
+//            children: <Widget>[
+//              ExerciseCard(
+//                exercise: Exercise.fromJson(values[index]),
+//                deleteExercise: removeExercise,
+//                updateSets: updateSets,
+//              ),
+//            ],
+//          );
+//        },
+//      );
     }
 
     var futureBuilder = new FutureBuilder(
@@ -311,7 +397,7 @@ class _HomePageState extends State<HomePage> {
         switch (snapshot.connectionState) {
           case ConnectionState.none:
           case ConnectionState.waiting:
-            return new Text('');
+          return new Text('loading...');
           default:
             if (snapshot.hasError)
               return new Text('Error: ${snapshot.error}');

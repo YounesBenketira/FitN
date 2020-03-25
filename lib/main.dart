@@ -1,9 +1,8 @@
-import 'package:flutter/material.dart';
-
 import 'package:fit_k/Pages/page_calendar.dart';
 import 'package:fit_k/Pages/page_home.dart';
 import 'package:fit_k/Pages/page_profile.dart';
 import 'package:fit_k/Pages/page_statistics.dart';
+import 'package:flutter/material.dart';
 
 import 'Logic/data_storage.dart';
 
@@ -58,12 +57,10 @@ class _MyHomePageState extends State<MyHomePage> {
     homePage = HomePage(
       key: homeKey,
       dataSet: dataList,
-      dateIndex: 0,
     );
 
     calendarPage = CalendarPage(
       key: calendarKey,
-      dataSet: dataList,
     );
 
     statisticsPage = StatisticsPage(

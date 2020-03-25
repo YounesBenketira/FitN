@@ -187,7 +187,6 @@ class _ExcerciseDialogueAdd extends State<ExerciseCreationPopup> {
                     ColorTheme theme = _selectedColor;
                     setState(() {
                       widget.addExercise(Exercise(
-                        id: widget.exerciseList.length,
                         workout: workout,
                         theme: theme,
                       ));
