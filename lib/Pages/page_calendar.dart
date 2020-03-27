@@ -1,4 +1,6 @@
 import 'package:fit_k/Logic/data_storage.dart';
+import 'package:fit_k/Logic/exercise.dart';
+import 'package:fit_k/UI/card_calendar_exercise.dart';
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 
@@ -59,8 +61,6 @@ class _CalendarPageState extends State<CalendarPage>
       }
     });
 
-//    print(_events);
-
     for (int i = 0; i < data.length; i++) {
       if (DateTime.parse(data[i]['date']) == _selectedDay)
         return data[i]['exercises'];
@@ -70,11 +70,8 @@ class _CalendarPageState extends State<CalendarPage>
   }
 
   void _onDaySelected(DateTime day, List events) {
-//    print('CALLBACK: _onDaySelected');
     setState(() {
-//      print(events);
       _selectedDay = DateTime(day.year, day.month, day.day);
-//      _selectedEvents = events;
     });
   }
 
@@ -219,13 +216,8 @@ class _CalendarPageState extends State<CalendarPage>
 //        print(snapshot.data);
         List<dynamic> parsedJson = snapshot.data;
         items = parsedJson.map((element) {
-          return Container(
-            width: double.infinity,
-            height: 20,
-            color: Colors.red,
-            child: Text(
-              element.toString(),
-            ),
+          return CalendarCard(
+            exercise: Exercise.fromJson(element),
           );
         }).toList();
 

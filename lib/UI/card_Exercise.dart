@@ -1,5 +1,6 @@
 import 'package:fit_k/Enums/cardTheme.dart';
 import 'package:fit_k/Logic/data_storage.dart';
+import 'package:fit_k/UI/ui_set.dart';
 import 'package:flutter/material.dart';
 
 import '../Enums/workout.dart';
@@ -28,11 +29,11 @@ class ExerciseCard extends StatefulWidget {
         this._icon = Image.asset("images/BarbellTEMP.png");
         break;
       case Workout.OverHeadPress:
-        this._title = "Over-Head Press";
+        this._title = "OH Press";
         this._icon = Image.asset("images/DumbbellTEMP.png");
         break;
       case Workout.BentOverRow:
-        this._title = "Bent-Over Row";
+        this._title = "Row";
         this._icon = Image.asset("images/WeightsTEMP.png");
         break;
       case Workout.Deadlift:
@@ -193,67 +194,77 @@ class _ExerciseCardState extends State<ExerciseCard> {
 
   Widget _buildButtons() {
     Widget _minusBtn() {
+      Text displayText;
+      if (widget.exercise.setList.length == 0)
+        displayText = Text(
+          'Remove this exercise?',
+          style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+        );
+      else
+        displayText = Text(
+          'Remove the last set?',
+          style: TextStyle(fontSize: 25),
+        );
+
       Dialog removeDialogue = Dialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
         elevation: 16,
         child: Container(
-          height: 200.0,
-          child: Form(
-            child: Column(children: <Widget>[
+          height: 155.0,
+          child: Column(children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.only(top: 30.0, bottom: 25.0),
+              child: displayText,
+            ),
+            Row(children: <Widget>[
               Container(
-                width: double.infinity,
-                height: 20,
+                width: 20,
+              ),
+              Expanded(
+                child: RaisedButton(
+                    color: Colors.lightBlueAccent[200],
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: Text(
+                      "Cancel",
+                      style: TextStyle(fontSize: 20, color: Colors.white),
+                    )),
               ),
               Container(
-                child: Text("Delte dis?"),
+                width: 20,
               ),
-              Row(children: <Widget>[
-                Container(
-                  width: 20,
-                ),
-                Expanded(
-                  child: RaisedButton(
-                      color: Colors.lightBlueAccent[200],
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
-                      child: Text(
-                        "Cancel",
-                        style: TextStyle(fontSize: 20, color: Colors.white),
-                      )),
-                ),
-                Container(
-                  width: 20,
-                ),
-                Expanded(
-                  child: RaisedButton(
-                      color: Colors.red,
-                      onPressed: () {
-                        setState(() {
-                          int id = widget.exercise.id;
-                          if (widget.exercise.setList.length == 0)
-                            widget.deleteExercise(id);
-                          else {
-                            widget.exercise
-                                .removeSet(widget.exercise.getSetCount() - 1);
-                            _storage.removeSet(
-                                widget.exercise, widget.updateSets);
-                          }
-                        });
+              Expanded(
+                child: RaisedButton(
+                    color: Colors.red,
+                    onPressed: () {
+                      setState(() {
+                        int id = widget.exercise.id;
+                        if (widget.exercise.setList.length == 0)
+                          widget.deleteExercise(id);
+                        else {
+                          widget.exercise
+                              .removeSet(widget.exercise.getSetCount() - 1);
+                          _storage.removeSet(
+                              widget.exercise, widget.updateSets);
+                        }
+                      });
 //                        widget.updateSets();
-                        Navigator.of(context).pop();
-                      },
-                      child: Text(
-                        "Remove",
-                        style: TextStyle(fontSize: 20, color: Colors.white),
-                      )),
-                ),
-                Container(
-                  width: 20,
-                ),
-              ]),
+                      Navigator.of(context).pop();
+                    },
+                    child: Text(
+                      "Remove",
+                      style: TextStyle(fontSize: 20, color: Colors.white),
+                    )),
+              ),
+              Container(
+                width: 20,
+              ),
             ]),
-          ),
+//            Container(
+//              height: 30,
+//            ),
+          ]),
         ),
       );
 
@@ -284,12 +295,20 @@ class _ExerciseCardState extends State<ExerciseCard> {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
         elevation: 16,
         child: Container(
-          height: 200.0,
+          height: 240.0,
           child: Form(
             child: Column(children: <Widget>[
               Container(
                 width: double.infinity,
-                height: 20,
+                height: 15,
+              ),
+              Text(
+                'Add Set',
+                style: TextStyle(fontSize: 25, fontWeight: FontWeight.w400),
+              ),
+              Container(
+                width: double.infinity,
+                height: 12,
               ),
               Container(
                 height: 50,
@@ -301,17 +320,23 @@ class _ExerciseCardState extends State<ExerciseCard> {
                     Expanded(
                       child: TextField(
                           textAlign: TextAlign.center,
-                          style:
-                              TextStyle(color: Colors.lightBlue, fontSize: 17),
+                          style: TextStyle(
+//                            color: Colors.lightBlue,
+                            fontSize: 20,
+                          ),
                           controller: _repController,
                           keyboardType: TextInputType.number,
                           decoration: InputDecoration(
-                              hintText: "Repititions",
-                              hintStyle: TextStyle(color: Colors.lightBlue),
+                              hintText: "# of Repititions",
+                              hintStyle: TextStyle(
+//                                color: Colors.lightBlue,
+                                  fontSize: 20),
                               contentPadding: EdgeInsets.only(bottom: 1),
                               enabledBorder: const OutlineInputBorder(
                                 borderSide: const BorderSide(
-                                    color: Colors.lightBlue, width: 1),
+//                                  color: Colors.lightBlue,
+                                  width: 1,
+                                ),
                               ),
                               border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(5.0)))),
@@ -335,18 +360,25 @@ class _ExerciseCardState extends State<ExerciseCard> {
                     Expanded(
                       child: TextField(
                           textAlign: TextAlign.center,
-                          style:
-                              TextStyle(color: Colors.lightBlue, fontSize: 17),
+                          style: TextStyle(
+//                            color: Colors.lightBlue,
+                            fontSize: 20,
+                          ),
                           controller: _weightController,
                           keyboardType: TextInputType.number,
                           decoration: InputDecoration(
-                              hintText: "Weight",
-                              hintStyle: TextStyle(color: Colors.lightBlue),
+                              hintText: "Weight (lbs./kg)",
+                              hintStyle: TextStyle(
+//                                color: Colors.lightBlue,
+                                fontSize: 20,
+                              ),
                               alignLabelWithHint: true,
                               contentPadding: EdgeInsets.only(bottom: 1),
                               enabledBorder: const OutlineInputBorder(
                                 borderSide: const BorderSide(
-                                    color: Colors.lightBlue, width: 1),
+//                                  color: Colors.lightBlue,
+                                  width: 1,
+                                ),
                               ),
                               border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(5.0)))),
@@ -358,7 +390,7 @@ class _ExerciseCardState extends State<ExerciseCard> {
                 ),
               ),
               Container(
-                height: 5,
+                height: 10,
               ),
               Row(children: <Widget>[
                 Container(
@@ -386,12 +418,13 @@ class _ExerciseCardState extends State<ExerciseCard> {
                           // @ TODO Error handling
                           int reps = int.parse(_repController.text);
                           int weight = int.parse(_weightController.text);
-
+//                          print("BEFORE: " + widget.exercise.toString());
                           widget.exercise.setList.putIfAbsent(
                               widget.exercise.setList.length.toString(),
                               () => [reps, weight]);
 
                           _storage.saveSet(widget.exercise, widget.updateSets);
+//                          print("AFTER: " + widget.exercise.toString());
                         });
 
                         Navigator.of(context).pop();
@@ -510,54 +543,14 @@ class _ExerciseCardState extends State<ExerciseCard> {
 //
 //    return futureBuilder;
 
-    Widget Set(int rep, int weight) {
-      return Padding(
-        padding: const EdgeInsets.only(left: 2.0),
-        child: Container(
-          width: 45,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>[
-              Expanded(
-                  child: Center(
-                child: Text(
-                  "$rep",
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white),
-                ),
-              )),
-              Padding(
-                padding: const EdgeInsets.only(left: 6, right: 6),
-                child: Container(
-                  color: Colors.white,
-                  height: 1.5,
-                ),
-              ),
-              Expanded(
-                  child: Center(
-                child: Text(
-                  "$weight",
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.normal,
-                      color: Colors.white),
-                ),
-              )),
-            ],
-          ),
-        ),
-      );
-    }
-
     List<Widget> setList = new List();
     for (int i = 0; i < widget.exercise.setList.length; i++) {
-      setList.add(Set(widget.exercise.setList[i.toString()][0],
-          widget.exercise.setList[i.toString()][1]));
+      SetUI set = SetUI(
+          rep: widget.exercise.setList[i.toString()][0],
+          weight: widget.exercise.setList[i.toString()][1]);
+      setList.add(set);
     }
+    ;
 
     return Padding(
       padding: const EdgeInsets.only(top: 55, left: 80, right: 22),

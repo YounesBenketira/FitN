@@ -61,9 +61,11 @@ class _ExcerciseDialogueAdd extends State<ExerciseCreationPopup> {
       list.add(DropdownMenuItem(
         value: color,
         child: Container(
+          width: double.infinity,
+          height: 40,
           color: clr,
-          width: 50,
-          height: 20,
+//          width: 50,
+//          height: 20,
         ),
       ));
     }
@@ -83,14 +85,13 @@ class _ExcerciseDialogueAdd extends State<ExerciseCreationPopup> {
     });
   }
 
-
   @override
   void initState() {
     _workoutMenuItems = _buildWorkoutMenuItems(workoutList);
-    _selectedWorkout = workoutList[0];
+//    _selectedWorkout = workoutList[0];
 
     _colorMenuItems = _buildColorMenuItems(colorList);
-    _selectedColor = colorList[0];
+//    _selectedColor = colorList[0];
 
     super.initState();
   }
@@ -101,65 +102,35 @@ class _ExcerciseDialogueAdd extends State<ExerciseCreationPopup> {
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       elevation: 16,
       child: Container(
+        color: Colors.transparent,
         height: 300.0,
         child: Column(children: <Widget>[
-          Row(
-            children: <Widget>[
-              SizedBox(
-                width: 20,
-              ),
-              Container(
-                width: 100,
-                height: 30,
-                child: FittedBox(
-                  alignment: Alignment.centerLeft,
-                  fit: BoxFit.contain,
-                  child: Text(
-                    "Workout: ",
-                    style: TextStyle(fontSize: 20),
-                  ),
-                ),
-              ),
-              SizedBox(
-                width: 10,
-              ),
-              DropdownButton(
-                value: _selectedWorkout,
-                items: _workoutMenuItems,
-                onChanged: changeWorkout,
-              ),
-            ],
+          Container(
+            color: Colors.red.withOpacity(0.26),
+            width: 140,
+            child: DropdownButton(
+              isExpanded: true,
+              elevation: 16,
+              hint: Text('Select Exercise'),
+              value: _selectedWorkout,
+              items: _workoutMenuItems,
+              onChanged: changeWorkout,
+            ),
           ),
-          Row(
-            children: <Widget>[
-              SizedBox(
-                width: 20,
-              ),
-              Container(
-                width: 90,
-                height: 30,
-                child: FittedBox(
-                  alignment: Alignment.centerLeft,
-                  fit: BoxFit.contain,
-                  child: Text(
-                    "Color: ",
-                    style: TextStyle(fontSize: 20),
-                  ),
-                ),
-              ),
-              Container(
-                width: 20,
-              ),
-              Container(
-//            height: 40,
-                color: Colors.white10,
+          Container(
+            width: 150,
+            child: ButtonTheme(
+              alignedDropdown: true,
+              child: DropdownButtonHideUnderline(
                 child: DropdownButton(
+                  isExpanded: true,
+                  hint: Text('Select Color'),
                   value: _selectedColor,
                   items: _colorMenuItems,
                   onChanged: changeColor,
                 ),
               ),
-            ],
+            ),
           ),
           Row(children: <Widget>[
             Container(
