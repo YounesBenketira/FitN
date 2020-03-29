@@ -1,3 +1,4 @@
+import 'package:fit_k/Logic/route_generator.dart';
 import 'package:fit_k/Pages/page_calendar.dart';
 import 'package:fit_k/Pages/page_home.dart';
 import 'package:fit_k/Pages/page_profile.dart';
@@ -21,6 +22,8 @@ class MyApp extends StatelessWidget {
       home: MyHomePage(
         storage: Storage(),
       ),
+      initialRoute: '/',
+      onGenerateRoute: RouteGenerator.generateRoute,
     );
   }
 }
@@ -50,15 +53,9 @@ class _MyHomePageState extends State<MyHomePage> {
 
   final PageStorageBucket bucket = PageStorageBucket();
   List<dynamic> dataList;
-  Storage _storage;
 
   @override
   void initState() {
-    _storage = Storage();
-
-    DateTime now = new DateTime.now();
-    DateTime todaysDate = new DateTime(now.year, now.month, now.day);
-
     homePage = HomePage(
       key: homeKey,
       dataSet: dataList,
@@ -66,6 +63,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
     calendarPage = CalendarPage(
       key: calendarKey,
+      dataSet: dataList,
     );
 
     statisticsPage = StatisticsPage(

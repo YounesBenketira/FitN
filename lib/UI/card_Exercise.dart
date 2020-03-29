@@ -15,9 +15,9 @@ class ExerciseCard extends StatefulWidget {
   Image _icon;
 
   Function deleteExercise;
-  Function updateSets;
+  Function updateDataSet;
 
-  ExerciseCard({this.exercise, this.deleteExercise, this.updateSets}) {
+  ExerciseCard({this.exercise, this.deleteExercise, this.updateDataSet}) {
     // Dynamically set widget header
     switch (this.exercise.workout) {
       case Workout.Bench:
@@ -233,7 +233,7 @@ class _ExerciseCardState extends State<ExerciseCard> {
                           widget.exercise
                               .removeSet(widget.exercise.getSetCount() - 1);
                           _storage.removeSet(
-                              widget.exercise, widget.updateSets);
+                              widget.exercise, widget.updateDataSet);
                         }
                       });
 //                        widget.updateSets();
@@ -290,7 +290,6 @@ class _ExerciseCardState extends State<ExerciseCard> {
                 width: double.infinity,
                 height: 15,
               ),
-
               Container(
                 width: double.infinity,
                 height: 12,
@@ -420,10 +419,9 @@ class _ExerciseCardState extends State<ExerciseCard> {
                               widget.exercise.setList.length.toString(),
                               () => [reps, weight]);
 
-                          _storage.saveSet(widget.exercise, widget.updateSets);
 //                          print("AFTER: " + widget.exercise.toString());
                         });
-
+                        _storage.saveSet(widget.exercise, widget.updateDataSet);
                         Navigator.of(context).pop();
                       },
                       child: Text(

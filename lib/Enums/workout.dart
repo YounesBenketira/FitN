@@ -3,5 +3,16 @@ enum Workout {
   Bench,
   OverHeadPress,
   BentOverRow,
-  Deadlift
+  Deadlift,
+}
+
+enum Categories {
+  Shoulders,
+  Triceps,
+  Biceps,
+  Chest,
+  Back,
+  Legs,
+  Abs,
+  Cardio,
 }

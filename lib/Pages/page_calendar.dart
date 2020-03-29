@@ -5,7 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 class CalendarPage extends StatefulWidget {
-  CalendarPage({Key key}) : super(key: key);
+  List<dynamic> dataSet;
+
+  CalendarPage({Key key, this.dataSet}) : super(key: key);
 
   @override
   _CalendarPageState createState() => _CalendarPageState();
@@ -17,24 +19,16 @@ class _CalendarPageState extends State<CalendarPage>
   Map<DateTime, List> _events;
   AnimationController _animationController;
   CalendarController _calendarController;
-  DateTime todaysDate;
   DateTime _selectedDay;
-  List _selectedEvents;
 
   @override
   void initState() {
-    super.initState();
     _storage = Storage();
-    _updateDataSet();
-
-    DateTime now = new DateTime.now();
-    todaysDate = new DateTime(now.year, now.month, now.day);
 
     // @TODO exercise count
     _events = {};
 
-    _selectedDay = todaysDate;
-    _selectedEvents = _events[_selectedDay];
+    _selectedDay = Storage.todaysDate;
 
     _calendarController = CalendarController();
     _animationController = AnimationController(
@@ -42,6 +36,9 @@ class _CalendarPageState extends State<CalendarPage>
       duration: const Duration(milliseconds: 400),
     );
     _animationController.forward();
+    _getExerciseList();
+
+    super.initState();
   }
 
   @override
@@ -51,8 +48,12 @@ class _CalendarPageState extends State<CalendarPage>
     super.dispose();
   }
 
-  Future _updateDataSet() async {
+  Future _getExerciseList() async {
     List<dynamic> data = await _storage.readData();
+
+    setState(() {
+      widget.dataSet = data;
+    });
 
     setState(() {
       for (int i = 0; i < data.length; i++) {
@@ -81,7 +82,8 @@ class _CalendarPageState extends State<CalendarPage>
       scrollDirection: Axis.vertical,
       children: <Widget>[
         _buildTableCalendarWithBuilders(),
-        _buildEventList(),
+        _buildExerciseList(),
+//        _buildExerciseList2(),
       ],
     );
   }
@@ -117,13 +119,11 @@ class _CalendarPageState extends State<CalendarPage>
         daysOfWeekStyle: DaysOfWeekStyle(
           weekdayStyle: TextStyle().copyWith(color: Colors.black, fontSize: 17),
           weekendStyle: TextStyle().copyWith(
-              color: Theme
-                  .of(context)
-                  .primaryColorDark, fontSize: 17),
+              color: Theme.of(context).primaryColorDark, fontSize: 17),
         ),
         headerStyle: HeaderStyle(
-          titleTextStyle: TextStyle().copyWith(
-              color: Colors.black, fontSize: 23),
+          titleTextStyle:
+          TextStyle().copyWith(color: Colors.black, fontSize: 23),
           centerHeaderTitle: true,
           formatButtonVisible: false,
         ),
@@ -225,55 +225,33 @@ class _CalendarPageState extends State<CalendarPage>
     );
   }
 
-  Widget _buildEventList() {
-    List<Widget> items = new List();
+  Widget _buildExerciseList() {
+    int dateIndex;
 
-    return FutureBuilder(
-      future: _updateDataSet(),
-      builder: (context, AsyncSnapshot snapshot) {
-        if (!snapshot.hasData) {
-          return Text('');
-        }
-//        print(snapshot.data);
-        List<dynamic> parsedJson = snapshot.data;
-        items = parsedJson.map((element) {
+    List<dynamic> data;
+    if (widget.dataSet == null) {
+      data = [];
+    } else
+      data = widget.dataSet;
+
+    for (int i = 0; i < data.length; i++)
+      if (DateTime.parse(data[i]['date']) == _selectedDay) dateIndex = i;
+
+    List<dynamic> exerciseList;
+    if (dateIndex == null)
+      exerciseList = [];
+    else
+      exerciseList = data[dateIndex]['exercises'];
+
+    return Column(
+      children: <Widget>[
+        ...exerciseList.map((entry) {
           return CalendarCard(
-            exercise: Exercise.fromJson(element),
+            exercise: Exercise.fromJson(entry),
           );
-        }).toList();
-
-        return ListView.builder(
-          physics: const NeverScrollableScrollPhysics(),
-          primary: false,
-          shrinkWrap: true,
-          itemCount: items.length,
-          itemBuilder: (context, index) {
-            final item = items[index];
-            return Column(
-              children: <Widget>[
-                item,
-              ],
-            );
-          },
-        );
-      },
+        }).toList(),
+      ],
     );
-
-//    return Column(
-//      children: _selectedEvents
-//          .map((event) => Container(
-//                decoration: BoxDecoration(
-//                  border: Border.all(width: 0.8),
-//                  borderRadius: BorderRadius.circular(12.0),
-//                ),
-//                margin:
-//                    const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
-//                child: ListTile(
-//                  title: Text(event.toString()),
-//                  onTap: () => print('$event tapped!'),
-//                ),
-//              ))
-//          .toList(),
-//    );
   }
+
 }

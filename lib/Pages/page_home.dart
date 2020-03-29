@@ -2,7 +2,6 @@ import 'package:bordered_text/bordered_text.dart';
 import 'package:fit_k/Logic/data_storage.dart';
 import 'package:fit_k/Logic/exercise.dart';
 import 'package:fit_k/UI/card_Exercise.dart';
-import 'package:fit_k/UI/popup_AddExercise.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -27,99 +26,55 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  Storage storage;
-  static List<dynamic> dataSetCopy;
+  Storage _storage;
 
-  DateTime todaysDate;
-  DateTime yesterdaysDate;
-  String formattedDate;
+  DateTime _todaysDate = Storage.todaysDate;
+  String _formattedDate;
 
-  int setsDone;
-  int excCount;
-  int dateIndex;
-  int yesterIndex;
+  int _dateIndex;
+
+  static List<dynamic> _futureData;
 
   @override
   void initState() {
-    storage = Storage();
-    dataSetCopy = widget.dataSet;
-
+    _storage = Storage();
     _updateDataSet();
-    getDateIndex();
-
-//    excCount = widget.dataSet[dateIndex]['exercises'].length;
-
-    var now = new DateTime.now();
-    todaysDate = new DateTime(now.year, now.month, now.day);
-    yesterdaysDate =
-    new DateTime(now.year, now.month, now.subtract(Duration(days: 1)).day);
+    _getDateIndex();
 
     var formatter = new DateFormat.yMMMMd('en_US');
-    formattedDate = formatter.format(todaysDate);
+    _formattedDate = formatter.format(_todaysDate);
 
-    updateSets();
+    _futureData = widget.dataSet;
 
     super.initState();
   }
 
-  void getDateIndex() {
+  void _getDateIndex() {
     Future data = _getData();
     data.then((var value) {
       List<dynamic> dataSet = value;
 
       for (int i = 0; i < dataSet.length; i++)
-        if (DateTime.parse(dataSet[i]['date']) == todaysDate)
+        if (DateTime.parse(dataSet[i]['date']) == _todaysDate)
           setState(() {
-            dateIndex = i;
-//            yesterIndex = dateIndex + 1;
+            _dateIndex = i;
           });
 
-      if (dateIndex == null) {
+      if (_dateIndex == null) {
         setState(() {
           widget.dataSet
-              .add({'date': todaysDate.toIso8601String(), 'exercises': []});
-          dateIndex = widget.dataSet.length - 1;
-//          yesterIndex = dateIndex + 1;
-          storage.save(widget.dataSet);
+              .add({'date': _todaysDate.toIso8601String(), 'exercises': []});
+          _dateIndex = widget.dataSet.length - 1;
+          _storage.save(widget.dataSet);
         });
       }
     });
   }
 
-  void updateSets() {
-    Future data = _getData();
-    data.then((var data) {
-      List<dynamic> exerciseList;
-
-      if (data.length == 0)
-        exerciseList = new List();
-      else {
-        if (dateIndex == null) dateIndex = data.length - 1;
-        print(dateIndex);
-        print(data);
-        exerciseList = data[dateIndex]['exercises'];
-      }
-
-      int setCount = 0;
-      for (int i = 0; i < exerciseList.length; i++) {
-        Exercise temp = Exercise.fromJson(exerciseList[i]);
-        int sets = temp.getSetCount();
-        setCount += sets;
-      }
-
-      setState(() {
-        setsDone = setCount;
-        excCount = exerciseList.length;
-        _updateDataSet();
-      });
-    });
-  }
-
   void _updateDataSet() {
-    Future<List<dynamic>> future = storage.readData();
+    Future<List<dynamic>> future = _storage.readData();
 
     future.then((var data) {
-//      print(data);
       setState(() {
         widget.dataSet = data;
       });
@@ -127,13 +82,10 @@ class _HomePageState extends State<HomePage> {
   }
 
   void removeExercise(int index) {
-    List<dynamic> exerciseList = widget.dataSet[dateIndex]['exercises'];
+    List<dynamic> exerciseList = widget.dataSet[_dateIndex]['exercises'];
     setState(() {
       exerciseList.removeAt(index);
     });
-
-//      print(exerciseList);
-//      print(exerciseList[0].runtimeType);
 
     for (int i = index; i < exerciseList.length; i++) {
       Exercise temp;
@@ -146,54 +98,27 @@ class _HomePageState extends State<HomePage> {
       exerciseList[i] = temp.toJson();
     }
 
-    excCount--;
-    storage.save(widget.dataSet);
-  }
-
-  void addExerciseYesterday(Exercise ex) {
-//    print("BEfore " + widget.dataSet.toString());
-    for (int i = 0; i < widget.dataSet.length; i++) {
-      if (DateTime.parse(widget.dataSet[i]['date']) == yesterdaysDate) {
-        ex.id = widget.dataSet[i]['exercises'].length;
-        widget.dataSet[yesterIndex]['exercises'].add(ex);
-        storage.save(widget.dataSet);
-        return;
-      }
-    }
-//    print("Middle " + widget.dataSet.toString());
-
-    ex.id = 0;
-    widget.dataSet.add({
-      'date': yesterdaysDate.toIso8601String(),
-      'exercises': [ex],
-    });
-
-//    print("End " + widget.dataSet.toString());
-    storage.save(widget.dataSet);
+    _storage.save(widget.dataSet);
   }
 
   void addExercise(Exercise ex) {
-//    print("BEFORE: " + widget.dataSet.toString());
     setState(() {
-      excCount++;
-
       if (widget.dataSet.length == 0) {
         ex.id = 0;
         widget.dataSet.add({
-          'date': todaysDate.toIso8601String(),
+          'date': _todaysDate.toIso8601String(),
           'exercises': [ex]
         });
       } else {
-        ex.id = widget.dataSet[dateIndex]['exercises'].length;
-        widget.dataSet[dateIndex]['exercises'].add(ex);
+        ex.id = widget.dataSet[_dateIndex]['exercises'].length;
+        widget.dataSet[_dateIndex]['exercises'].add(ex);
       }
     });
-//    print("AFTER: " + widget.dataSet.toString());
-    storage.save(widget.dataSet);
+    _storage.save(widget.dataSet);
   }
 
   Future _getData() async {
-    var data = await storage.readData();
+    var data = await _storage.readData();
 //    await new Future.delayed(new Duration(microseconds: 1));
     return data;
   }
@@ -204,46 +129,10 @@ class _HomePageState extends State<HomePage> {
       children: <Widget>[
         Stack(
           children: <Widget>[
-            Container(
-              width: double.infinity,
-              height: 150,
-//              decoration: BoxDecoration(
-//                gradient: LinearGradient(
-//                  begin: Alignment.topLeft,
-//                  end: Alignment.bottomRight,
-//                  colors: [
-//                    Colors.lightBlueAccent,
-//                    Colors.greenAccent,
-//                  ],
-//                ),
-//              ),
-              child: FittedBox(
-                  fit: BoxFit.fill, child: Image.asset('images/unnamed.jpg')),
-//              child: Image.network(
-//                  'https://wallpapercave.com/wp/wp4250294.jpg'),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(top: 10.0),
-              child: Container(
-                width: double.infinity,
-                child: BorderedText(
-                  strokeWidth: 1.5,
-                  child: Text(
-                    '$formattedDate',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 40,
-                      fontFamily: 'OpenSans-Bold',
-                      fontWeight: FontWeight.w500,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-              ),
-            ),
+            _buildDayInformation(),
             Padding(
               padding: const EdgeInsets.only(top: 130.0),
-              child: _buildAddBtn(),
+              child: _buildButtons(),
             ),
             Padding(
               padding: const EdgeInsets.only(top: 176),
@@ -255,245 +144,51 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-//  @override
-//  Widget build(BuildContext context) {
-//    return ListView(
-//      scrollDirection: Axis.vertical,
-//      children: <Widget>[
-////        _buildDayInformation(),
-//        _buildAddBtn(),
-//        _buildExerciseList(),
-//      ],
-//    );
-//  }
-
   Widget _buildDayInformation() {
-    String exerciseCounter = "0";
-    if (excCount != null) exerciseCounter = excCount.toString();
-
-    String setCounter = "0";
-    if (setsDone != null) setCounter = setsDone.toString();
-
-    Widget card = Padding(
-      padding: const EdgeInsets.only(top: 10, bottom: 15, left: 12, right: 12),
-      child: Container(
-        height: 125,
-//        color: Colors.white,
-        child: Container(
-          decoration: BoxDecoration(
-              color: Colors.white,
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black26,
-                  blurRadius: 8.0, // has the effect of softening the shadow
-                  spreadRadius: 1, // has the effect of extending the shadow
-                  offset: Offset(
-                    1.1, // horizontal, move right 10
-                    4.0, // vertical, move down 10
-                  ),
-                )
-              ],
-              borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(10),
-                topRight: Radius.circular(10),
-                bottomLeft: Radius.circular(10),
-                bottomRight: Radius.circular(10),
-              )),
-          width: double.infinity,
-        ),
-      ),
-    );
-
     return Stack(
       children: <Widget>[
-        card,
-        Padding(
-          padding: const EdgeInsets.only(top: 52, left: 60, right: 60),
-          child: Center(
-            child: Container(
-              width: double.infinity,
-              height: 2,
-              color: Colors.black87,
-            ),
-          ),
+        Container(
+          width: double.infinity,
+          height: 150,
+//              decoration: BoxDecoration(
+//                gradient: LinearGradient(
+//                  begin: Alignment.topLeft,
+//                  end: Alignment.bottomRight,
+//                  colors: [
+//                    Colors.lightBlueAccent,
+//                    Colors.greenAccent,
+//                  ],
+//                ),
+//              ),
+          child: FittedBox(
+              fit: BoxFit.fill, child: Image.asset('images/unnamed.jpg')),
+//              child: Image.network(
+//                  'https://wallpapercave.com/wp/wp4250294.jpg'),
         ),
         Padding(
-          padding: const EdgeInsets.only(top: 12.0),
-          child: Center(
-            child: Text(
-              formattedDate,
-              style: TextStyle(
-                fontSize: 28,
-                fontFamily: 'OpenSans',
-                color: Colors.black87,
-                fontWeight: FontWeight.w600,
+          padding: const EdgeInsets.only(top: 10.0),
+          child: Container(
+            width: double.infinity,
+            child: BorderedText(
+              strokeWidth: 1.5,
+              child: Text(
+                '$_formattedDate',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 40,
+                  fontFamily: 'OpenSans-Bold',
+                  fontWeight: FontWeight.w500,
+                ),
+                textAlign: TextAlign.center,
               ),
             ),
           ),
         ),
-        Positioned(
-          left: 35,
-          top: 50,
-          child: Text(
-            'Sets Done',
-            style: TextStyle(
-              fontSize: 30,
-              color: Colors.black,
-              fontFamily: 'OpenSans',
-//              color: Colors.black54,
-              fontWeight: FontWeight.normal,
-            ),
-          ),
-        ),
-        Positioned(
-          left: 35,
-          top: 85,
-          child: Text(
-            'Exercises Done',
-            style: TextStyle(
-              fontSize: 30,
-              color: Colors.black,
-              fontFamily: 'OpenSans',
-//              color: Colors.black54,
-              fontWeight: FontWeight.normal,
-            ),
-          ),
-        ),
-        Positioned(
-            right: 50,
-            top: 51,
-            child: Text(
-              '$setCounter',
-              style: TextStyle(
-                fontSize: 35,
-                color: Theme.of(context).primaryColor,
-              ),
-            )),
-        Positioned(
-            right: 50,
-            top: 86,
-            child: Text(
-              '$exerciseCounter',
-              style: TextStyle(
-                fontSize: 35,
-                color: Theme.of(context).primaryColor,
-//              fontWeight: FontWeight.bold
-              ),
-            )),
       ],
     );
-//    return Column(children: <Widget>[
-//      Padding(
-//        // Today's Date
-//        padding: const EdgeInsets.all(15.0),
-//        child: Container(
-//          width: double.infinity,
-//          height: 40,
-//          decoration: BoxDecoration(
-//            color: Colors.white,
-//            boxShadow: [
-//              BoxShadow(
-//                color: Colors.black26,
-//                blurRadius: 8.0,
-//                spreadRadius: 0.1,
-//                offset: Offset(
-//                  1.1, // horizontal, move right 10
-//                  2.0, // vertical, move down 10
-//                ),
-//              )
-//            ],
-//            borderRadius: BorderRadius.all(Radius.circular(10)),
-//          ),
-//          child: Center(
-//              child: Text(
-//            formattedDate,
-//            style: TextStyle(
-//              fontSize: 28,
-//              color: Theme.of(context).primaryColor,
-////              color: Colors.black38,
-//              fontWeight: FontWeight.bold,
-//            ),
-//          )),
-//        ),
-//      ),
-//      Padding(
-//        // Exercise & Sets Done
-//        padding: const EdgeInsets.only(left: 15, right: 15, bottom: 15),
-//        child: Container(
-//          height: 50,
-//          child: Row(
-//            children: <Widget>[
-//              Expanded(
-//                child: Container(
-//                  decoration: BoxDecoration(
-//                    color: Colors.white,
-//                    boxShadow: [
-//                      BoxShadow(
-//                        color: Colors.black26,
-//                        blurRadius: 8.0,
-//                        spreadRadius: 0.1,
-//                        offset: Offset(
-//                          1.1, // horizontal, move right 10
-//                          2.0, // vertical, move down 10
-//                        ),
-//                      )
-//                    ],
-//                    borderRadius: BorderRadius.all(Radius.circular(10)),
-//                  ),
-//                  child: Center(
-//                    child: Text(
-//                      "Exercises $exerciseCounter",
-//                      style: TextStyle(
-//                        color: Theme.of(context).primaryColor,
-////                        color: Colors.black38,
-//                        fontWeight: FontWeight.bold,
-//                        fontSize: 27,
-//                      ),
-//                    ),
-//                  ),
-//                ),
-//              ),
-//              Container(
-//                width: 20,
-//              ),
-//              Expanded(
-//                child: Container(
-//                  decoration: BoxDecoration(
-//                    color: Colors.white,
-//                    boxShadow: [
-//                      BoxShadow(
-//                        color: Colors.black26,
-//                        blurRadius: 8.0,
-//                        spreadRadius: 0.1,
-//                        offset: Offset(
-//                          1.1, // horizontal, move right 10
-//                          2.0, // vertical, move down 10
-//                        ),
-//                      )
-//                    ],
-//                    borderRadius: BorderRadius.all(Radius.circular(10)),
-//                  ),
-//                  child: Center(
-//                    child: Text(
-//                      "Sets $setCounter",
-//                      style: TextStyle(
-//                        fontSize: 28,
-//                        color: Theme.of(context).primaryColor,
-////                        color: Colors.black38,
-//                        fontWeight: FontWeight.bold,
-//                      ),
-//                    ),
-//                  ),
-//                ),
-//              ),
-//            ],
-//          ),
-//        ),
-//      )
-//    ]);
   }
 
-  Widget _buildAddBtn() {
+  Widget _buildButtons() {
     return Row(
       mainAxisSize: MainAxisSize.max,
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -536,18 +231,22 @@ class _HomePageState extends State<HomePage> {
             highlightElevation: 8,
             color: Colors.greenAccent[400],
             onPressed: () {
-              showDialog(
-                context: context,
-                builder: (context) {
-                  List<dynamic> exerciseList = new List();
-                  if (widget.dataSet.length != 0)
-                    exerciseList = widget.dataSet[dateIndex]['exercises'];
-                  return ExerciseCreationPopup(
-                    exerciseList: exerciseList,
-                    addExercise: addExercise,
-                  );
-                },
+              Navigator.of(context).pushNamed(
+                '/creationPage',
+                arguments: 'Doggiechan',
               );
+//              showDialog(
+//                context: context,
+//                builder: (context) {
+//                  List<dynamic> exerciseList = new List();
+//                  if (widget.dataSet.length != 0)
+//                    exerciseList = widget.dataSet[_dateIndex]['exercises'];
+//                  return ExerciseCreationPopup(
+//                    exerciseList: exerciseList,
+//                    addExercise: addExercise,
+//                  );
+//                },
+//              );
             },
             shape:
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
@@ -557,16 +256,21 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  AsyncSnapshot lastSnapshot;
+  AsyncSnapshot _lastSnapshot =
+      AsyncSnapshot.withData(ConnectionState.done, _futureData);
 
   Widget _buildExerciseList() {
     Widget createListView(BuildContext context, AsyncSnapshot snapshot) {
       List<dynamic> values;
-
-      if (snapshot.data.length == 0)
+//      print('DATA = ' + snapshot.data.toString());
+//      print('INDEX = ' + _dateIndex.toString());
+//      print(snapshot.data[_dateIndex]);
+      if (snapshot.data == null || snapshot.data.length == 0)
         values = [];
       else {
-        values = snapshot.data[dateIndex]['exercises'];
+        // @TODO can cause error in future
+        if (_dateIndex == null) _dateIndex = snapshot.data.length - 1;
+        values = snapshot.data[_dateIndex]['exercises'];
       }
 
       return new ListView.builder(
@@ -575,13 +279,18 @@ class _HomePageState extends State<HomePage> {
         shrinkWrap: true,
         itemCount: values.length,
         itemBuilder: (BuildContext context, int index) {
+          Exercise temp;
+          if (values[index].runtimeType == Exercise)
+            temp = values[index];
+          else
+            temp = Exercise.fromJson(values[index]);
+
           return new Column(
-//            crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
               ExerciseCard(
-                exercise: Exercise.fromJson(values[index]),
+                exercise: temp,
                 deleteExercise: removeExercise,
-                updateSets: updateSets,
+                updateDataSet: _updateDataSet,
               ),
             ],
           );
@@ -595,13 +304,14 @@ class _HomePageState extends State<HomePage> {
         switch (snapshot.connectionState) {
           case ConnectionState.none:
           case ConnectionState.waiting:
-            if (lastSnapshot == null) return new Text('');
-            return createListView(context, lastSnapshot);
+            if (_lastSnapshot == null) return new Text('');
+            return createListView(context, _lastSnapshot);
           default:
             if (snapshot.hasError)
               return new Text('Error: ${snapshot.error}');
             else {
-              lastSnapshot = snapshot;
+//              print(snapshot);
+              _lastSnapshot = snapshot;
               return createListView(context, snapshot);
             }
         }
