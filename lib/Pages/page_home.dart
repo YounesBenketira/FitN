@@ -1,3 +1,4 @@
+import 'package:bordered_text/bordered_text.dart';
 import 'package:fit_k/Logic/data_storage.dart';
 import 'package:fit_k/Logic/exercise.dart';
 import 'package:fit_k/UI/card_Exercise.dart';
@@ -51,7 +52,7 @@ class _HomePageState extends State<HomePage> {
     var now = new DateTime.now();
     todaysDate = new DateTime(now.year, now.month, now.day);
     yesterdaysDate =
-        new DateTime(now.year, now.month, now.subtract(Duration(days: 1)).day);
+    new DateTime(now.year, now.month, now.subtract(Duration(days: 1)).day);
 
     var formatter = new DateFormat.yMMMMd('en_US');
     formattedDate = formatter.format(todaysDate);
@@ -70,17 +71,17 @@ class _HomePageState extends State<HomePage> {
         if (DateTime.parse(dataSet[i]['date']) == todaysDate)
           setState(() {
             dateIndex = i;
-            yesterIndex = dateIndex + 1;
+//            yesterIndex = dateIndex + 1;
           });
 
       if (dateIndex == null) {
         setState(() {
-          widget.dataSet.add(
-              {'date': todaysDate.toIso8601String(), 'exercises': []});
+          widget.dataSet
+              .add({'date': todaysDate.toIso8601String(), 'exercises': []});
           dateIndex = widget.dataSet.length - 1;
-          yesterIndex = dateIndex + 1;
+//          yesterIndex = dateIndex + 1;
+          storage.save(widget.dataSet);
         });
-        storage.save(widget.dataSet);
       }
     });
   }
@@ -94,8 +95,8 @@ class _HomePageState extends State<HomePage> {
         exerciseList = new List();
       else {
         if (dateIndex == null) dateIndex = data.length - 1;
-//        print(dateIndex);
-//        print(data);
+        print(dateIndex);
+        print(data);
         exerciseList = data[dateIndex]['exercises'];
       }
 
@@ -200,164 +201,359 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return ListView(
-      scrollDirection: Axis.vertical,
       children: <Widget>[
-        _buildDayInformation(),
-        _buildAddBtn(),
-        _buildExerciseList(),
+        Stack(
+          children: <Widget>[
+            Container(
+              width: double.infinity,
+              height: 150,
+//              decoration: BoxDecoration(
+//                gradient: LinearGradient(
+//                  begin: Alignment.topLeft,
+//                  end: Alignment.bottomRight,
+//                  colors: [
+//                    Colors.lightBlueAccent,
+//                    Colors.greenAccent,
+//                  ],
+//                ),
+//              ),
+              child: FittedBox(
+                  fit: BoxFit.fill, child: Image.asset('images/unnamed.jpg')),
+//              child: Image.network(
+//                  'https://wallpapercave.com/wp/wp4250294.jpg'),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(top: 10.0),
+              child: Container(
+                width: double.infinity,
+                child: BorderedText(
+                  strokeWidth: 1.5,
+                  child: Text(
+                    '$formattedDate',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 40,
+                      fontFamily: 'OpenSans-Bold',
+                      fontWeight: FontWeight.w500,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(top: 130.0),
+              child: _buildAddBtn(),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(top: 176),
+              child: _buildExerciseList(),
+            ),
+          ],
+        ),
       ],
     );
   }
 
+//  @override
+//  Widget build(BuildContext context) {
+//    return ListView(
+//      scrollDirection: Axis.vertical,
+//      children: <Widget>[
+////        _buildDayInformation(),
+//        _buildAddBtn(),
+//        _buildExerciseList(),
+//      ],
+//    );
+//  }
+
   Widget _buildDayInformation() {
-    String exerciseCounter = "  ";
-    if (excCount != null)
-      exerciseCounter = excCount.toString();
+    String exerciseCounter = "0";
+    if (excCount != null) exerciseCounter = excCount.toString();
 
-    String setCounter = "  ";
-    if (setsDone != null)
-      setCounter = setsDone.toString();
+    String setCounter = "0";
+    if (setsDone != null) setCounter = setsDone.toString();
 
-    return Column(children: <Widget>[
-      Padding(
-        // Today's Date
-        padding: const EdgeInsets.all(15.0),
+    Widget card = Padding(
+      padding: const EdgeInsets.only(top: 10, bottom: 15, left: 12, right: 12),
+      child: Container(
+        height: 125,
+//        color: Colors.white,
         child: Container(
-          width: double.infinity,
-          height: 40,
           decoration: BoxDecoration(
-            color: Colors.white,
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black26,
-                blurRadius: 8.0,
-                spreadRadius: 0.1,
-                offset: Offset(
-                  1.1, // horizontal, move right 10
-                  2.0, // vertical, move down 10
-                ),
-              )
-            ],
-            borderRadius: BorderRadius.all(Radius.circular(10)),
-          ),
-          child: Center(
-              child: Text(
-                formattedDate,
-                style: TextStyle(
-                  fontSize: 28,
-                  color: Colors.lightBlueAccent,
-                  fontWeight: FontWeight.bold,
-                ),
+              color: Colors.white,
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black26,
+                  blurRadius: 8.0, // has the effect of softening the shadow
+                  spreadRadius: 1, // has the effect of extending the shadow
+                  offset: Offset(
+                    1.1, // horizontal, move right 10
+                    4.0, // vertical, move down 10
+                  ),
+                )
+              ],
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(10),
+                topRight: Radius.circular(10),
+                bottomLeft: Radius.circular(10),
+                bottomRight: Radius.circular(10),
               )),
+          width: double.infinity,
         ),
       ),
-      Padding(
-        // Exercise & Sets Done
-        padding: const EdgeInsets.only(left: 15, right: 15, bottom: 15),
-        child: Container(
-          height: 50,
-          child: Row(
-            children: <Widget>[
-              Expanded(
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black26,
-                        blurRadius: 8.0,
-                        spreadRadius: 0.1,
-                        offset: Offset(
-                          1.1, // horizontal, move right 10
-                          2.0, // vertical, move down 10
-                        ),
-                      )
-                    ],
-                    borderRadius: BorderRadius.all(Radius.circular(10)),
-                  ),
-                  child: Center(
-                    child: Text(
-                      "$exerciseCounter Exercises",
-                      style: TextStyle(
-                        color: Colors.lightBlueAccent,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 25,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              Container(
-                width: 20,
-              ),
-              Expanded(
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black26,
-                        blurRadius: 8.0,
-                        spreadRadius: 0.1,
-                        offset: Offset(
-                          1.1, // horizontal, move right 10
-                          2.0, // vertical, move down 10
-                        ),
-                      )
-                    ],
-                    borderRadius: BorderRadius.all(Radius.circular(10)),
-                  ),
-                  child: Center(
-                    child: Text(
-                      "$setCounter Sets",
-                      style: TextStyle(
-                        fontSize: 28,
-                        color: Colors.lightBlueAccent,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ],
+    );
+
+    return Stack(
+      children: <Widget>[
+        card,
+        Padding(
+          padding: const EdgeInsets.only(top: 52, left: 60, right: 60),
+          child: Center(
+            child: Container(
+              width: double.infinity,
+              height: 2,
+              color: Colors.black87,
+            ),
           ),
         ),
-      )
-    ]);
+        Padding(
+          padding: const EdgeInsets.only(top: 12.0),
+          child: Center(
+            child: Text(
+              formattedDate,
+              style: TextStyle(
+                fontSize: 28,
+                fontFamily: 'OpenSans',
+                color: Colors.black87,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+        ),
+        Positioned(
+          left: 35,
+          top: 50,
+          child: Text(
+            'Sets Done',
+            style: TextStyle(
+              fontSize: 30,
+              color: Colors.black,
+              fontFamily: 'OpenSans',
+//              color: Colors.black54,
+              fontWeight: FontWeight.normal,
+            ),
+          ),
+        ),
+        Positioned(
+          left: 35,
+          top: 85,
+          child: Text(
+            'Exercises Done',
+            style: TextStyle(
+              fontSize: 30,
+              color: Colors.black,
+              fontFamily: 'OpenSans',
+//              color: Colors.black54,
+              fontWeight: FontWeight.normal,
+            ),
+          ),
+        ),
+        Positioned(
+            right: 50,
+            top: 51,
+            child: Text(
+              '$setCounter',
+              style: TextStyle(
+                fontSize: 35,
+                color: Theme.of(context).primaryColor,
+              ),
+            )),
+        Positioned(
+            right: 50,
+            top: 86,
+            child: Text(
+              '$exerciseCounter',
+              style: TextStyle(
+                fontSize: 35,
+                color: Theme.of(context).primaryColor,
+//              fontWeight: FontWeight.bold
+              ),
+            )),
+      ],
+    );
+//    return Column(children: <Widget>[
+//      Padding(
+//        // Today's Date
+//        padding: const EdgeInsets.all(15.0),
+//        child: Container(
+//          width: double.infinity,
+//          height: 40,
+//          decoration: BoxDecoration(
+//            color: Colors.white,
+//            boxShadow: [
+//              BoxShadow(
+//                color: Colors.black26,
+//                blurRadius: 8.0,
+//                spreadRadius: 0.1,
+//                offset: Offset(
+//                  1.1, // horizontal, move right 10
+//                  2.0, // vertical, move down 10
+//                ),
+//              )
+//            ],
+//            borderRadius: BorderRadius.all(Radius.circular(10)),
+//          ),
+//          child: Center(
+//              child: Text(
+//            formattedDate,
+//            style: TextStyle(
+//              fontSize: 28,
+//              color: Theme.of(context).primaryColor,
+////              color: Colors.black38,
+//              fontWeight: FontWeight.bold,
+//            ),
+//          )),
+//        ),
+//      ),
+//      Padding(
+//        // Exercise & Sets Done
+//        padding: const EdgeInsets.only(left: 15, right: 15, bottom: 15),
+//        child: Container(
+//          height: 50,
+//          child: Row(
+//            children: <Widget>[
+//              Expanded(
+//                child: Container(
+//                  decoration: BoxDecoration(
+//                    color: Colors.white,
+//                    boxShadow: [
+//                      BoxShadow(
+//                        color: Colors.black26,
+//                        blurRadius: 8.0,
+//                        spreadRadius: 0.1,
+//                        offset: Offset(
+//                          1.1, // horizontal, move right 10
+//                          2.0, // vertical, move down 10
+//                        ),
+//                      )
+//                    ],
+//                    borderRadius: BorderRadius.all(Radius.circular(10)),
+//                  ),
+//                  child: Center(
+//                    child: Text(
+//                      "Exercises $exerciseCounter",
+//                      style: TextStyle(
+//                        color: Theme.of(context).primaryColor,
+////                        color: Colors.black38,
+//                        fontWeight: FontWeight.bold,
+//                        fontSize: 27,
+//                      ),
+//                    ),
+//                  ),
+//                ),
+//              ),
+//              Container(
+//                width: 20,
+//              ),
+//              Expanded(
+//                child: Container(
+//                  decoration: BoxDecoration(
+//                    color: Colors.white,
+//                    boxShadow: [
+//                      BoxShadow(
+//                        color: Colors.black26,
+//                        blurRadius: 8.0,
+//                        spreadRadius: 0.1,
+//                        offset: Offset(
+//                          1.1, // horizontal, move right 10
+//                          2.0, // vertical, move down 10
+//                        ),
+//                      )
+//                    ],
+//                    borderRadius: BorderRadius.all(Radius.circular(10)),
+//                  ),
+//                  child: Center(
+//                    child: Text(
+//                      "Sets $setCounter",
+//                      style: TextStyle(
+//                        fontSize: 28,
+//                        color: Theme.of(context).primaryColor,
+////                        color: Colors.black38,
+//                        fontWeight: FontWeight.bold,
+//                      ),
+//                    ),
+//                  ),
+//                ),
+//              ),
+//            ],
+//          ),
+//        ),
+//      )
+//    ]);
   }
 
   Widget _buildAddBtn() {
-    return Padding(
-      padding: const EdgeInsets.only(left: 15.0, right: 15.0, bottom: 5),
-      child: Container(
-        height: 40,
-        width: double.infinity,
-        child: RaisedButton(
-          highlightElevation: 8,
-          color: Colors.lightBlueAccent[100],
-          onPressed: () {
-            showDialog(
-              context: context,
-              builder: (context) {
-                List<dynamic> exerciseList = new List();
-                if (widget.dataSet.length != 0)
-                  exerciseList = widget.dataSet[dateIndex]['exercises'];
-                return ExerciseCreationPopup(
-                  exerciseList: exerciseList,
-                  addExercise: addExercise,
-//                  addExercise: addExerciseYesterday,
-                );
-              },
-            );
-          },
-          child: Text(
-            "Add Exercise",
-            style: TextStyle(color: Colors.white, fontSize: 25),
+    return Row(
+      mainAxisSize: MainAxisSize.max,
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: <Widget>[
+        Container(
+          height: 40,
+          width: 120,
+          child: RaisedButton(
+            color: Colors.lightBlueAccent,
+            elevation: 5,
+            onPressed: () {},
+            child: Text(
+              "Copy",
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 24,
+              ),
+            ),
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
           ),
-          shape:
-          RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
         ),
-      ),
+        Container(
+          height: 40,
+          width: 220,
+          child: RaisedButton.icon(
+            elevation: 5,
+            icon: Icon(
+              Icons.add,
+              size: 30,
+              color: Colors.white,
+            ),
+            label: Text(
+              "Add Exercise",
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 24,
+              ),
+            ),
+            highlightElevation: 8,
+            color: Colors.greenAccent[400],
+            onPressed: () {
+              showDialog(
+                context: context,
+                builder: (context) {
+                  List<dynamic> exerciseList = new List();
+                  if (widget.dataSet.length != 0)
+                    exerciseList = widget.dataSet[dateIndex]['exercises'];
+                  return ExerciseCreationPopup(
+                    exerciseList: exerciseList,
+                    addExercise: addExercise,
+                  );
+                },
+              );
+            },
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+          ),
+        ),
+      ],
     );
   }
 
@@ -380,6 +576,7 @@ class _HomePageState extends State<HomePage> {
         itemCount: values.length,
         itemBuilder: (BuildContext context, int index) {
           return new Column(
+//            crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
               ExerciseCard(
                 exercise: Exercise.fromJson(values[index]),
@@ -398,8 +595,7 @@ class _HomePageState extends State<HomePage> {
         switch (snapshot.connectionState) {
           case ConnectionState.none:
           case ConnectionState.waiting:
-            if (lastSnapshot == null)
-              return new Text('');
+            if (lastSnapshot == null) return new Text('');
             return createListView(context, lastSnapshot);
           default:
             if (snapshot.hasError)

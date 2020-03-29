@@ -94,7 +94,7 @@ class _CalendarPageState extends State<CalendarPage>
         events: _events,
 //      holidays: _holidays,
         initialCalendarFormat: CalendarFormat.month,
-//        formatAnimation: FormatAnimation.slide,
+        formatAnimation: FormatAnimation.slide,
         startingDayOfWeek: StartingDayOfWeek.sunday,
         availableGestures: AvailableGestures.all,
         availableCalendarFormats: const {
@@ -102,14 +102,28 @@ class _CalendarPageState extends State<CalendarPage>
 //          CalendarFormat.week: '',
         },
         calendarStyle: CalendarStyle(
-          outsideDaysVisible: false,
-          weekendStyle: TextStyle().copyWith(color: Colors.blue[800]),
-          holidayStyle: TextStyle().copyWith(color: Colors.blue[800]),
+          outsideDaysVisible: true,
+          outsideStyle:
+              TextStyle().copyWith(color: Colors.black26, fontSize: 16),
+          outsideWeekendStyle:
+              TextStyle().copyWith(color: Colors.black26, fontSize: 16),
+          weekdayStyle:
+              TextStyle().copyWith(color: Colors.black87, fontSize: 16),
+          weekendStyle: TextStyle().copyWith(
+              color: Theme.of(context).primaryColorDark, fontSize: 16),
+          holidayStyle:
+              TextStyle().copyWith(color: Theme.of(context).primaryColor),
         ),
         daysOfWeekStyle: DaysOfWeekStyle(
-          weekendStyle: TextStyle().copyWith(color: Colors.blue[600]),
+          weekdayStyle: TextStyle().copyWith(color: Colors.black, fontSize: 17),
+          weekendStyle: TextStyle().copyWith(
+              color: Theme
+                  .of(context)
+                  .primaryColorDark, fontSize: 17),
         ),
         headerStyle: HeaderStyle(
+          titleTextStyle: TextStyle().copyWith(
+              color: Colors.black, fontSize: 23),
           centerHeaderTitle: true,
           formatButtonVisible: false,
         ),
@@ -121,7 +135,10 @@ class _CalendarPageState extends State<CalendarPage>
               child: Container(
                 margin: const EdgeInsets.all(4.0),
                 padding: const EdgeInsets.only(top: 5.0, left: 6.0),
-                color: Colors.lightBlueAccent[100],
+                color: Theme
+                    .of(context)
+                    .primaryColorLight
+                    .withOpacity(0.6),
                 width: 100,
                 height: 100,
                 child: Text(
@@ -135,7 +152,7 @@ class _CalendarPageState extends State<CalendarPage>
             return Container(
               margin: const EdgeInsets.all(4.0),
               padding: const EdgeInsets.only(top: 5.0, left: 6.0),
-              color: Colors.lightBlueAccent[400],
+              color: Colors.blue[300],
               width: 100,
               height: 100,
               child: Text(
@@ -185,10 +202,14 @@ class _CalendarPageState extends State<CalendarPage>
       decoration: BoxDecoration(
         shape: BoxShape.rectangle,
         color: _calendarController.isSelected(date)
-            ? Colors.brown[500]
+            ? Theme
+            .of(context)
+            .primaryColorDark
             : _calendarController.isToday(date)
-                ? Colors.brown[300]
-                : Colors.blue[400],
+            ? Theme
+            .of(context)
+            .primaryColorLight
+            : Colors.blue[400],
       ),
       width: 16.0,
       height: 16.0,
@@ -211,7 +232,7 @@ class _CalendarPageState extends State<CalendarPage>
       future: _updateDataSet(),
       builder: (context, AsyncSnapshot snapshot) {
         if (!snapshot.hasData) {
-          return Text('Loading...');
+          return Text('');
         }
 //        print(snapshot.data);
         List<dynamic> parsedJson = snapshot.data;
@@ -222,6 +243,7 @@ class _CalendarPageState extends State<CalendarPage>
         }).toList();
 
         return ListView.builder(
+          physics: const NeverScrollableScrollPhysics(),
           primary: false,
           shrinkWrap: true,
           itemCount: items.length,

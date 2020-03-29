@@ -13,6 +13,11 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      theme: ThemeData(
+        primaryColorDark: Colors.lightBlueAccent[700],
+        primaryColor: Colors.lightBlueAccent,
+        primaryColorLight: Colors.lightBlueAccent[100],
+      ),
       home: MyHomePage(
         storage: Storage(),
       ),
@@ -81,8 +86,19 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
+      appBar: AppBar(
+        centerTitle: true,
+        title: Text(
+          'FitN',
+          style: TextStyle(
+            fontSize: 45,
+            color: Colors.black,
+            fontFamily: 'ShareTech',
+          ),
+        ),
+        backgroundColor: Colors.white,
+      ),
       body: PageStorage(
         child: currentPage,
         bucket: bucket,
@@ -94,6 +110,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Widget _buildBottomNavigationBar() {
     return BottomNavigationBar(
+      backgroundColor: Colors.white,
       type: BottomNavigationBarType.fixed,
       currentIndex: _currentTab,
       onTap: (int index) {

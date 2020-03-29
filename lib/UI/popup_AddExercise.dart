@@ -62,7 +62,7 @@ class _ExcerciseDialogueAdd extends State<ExerciseCreationPopup> {
         value: color,
         child: Container(
           width: double.infinity,
-          height: 40,
+          height: 30,
           color: clr,
 //          width: 50,
 //          height: 20,
@@ -88,10 +88,10 @@ class _ExcerciseDialogueAdd extends State<ExerciseCreationPopup> {
   @override
   void initState() {
     _workoutMenuItems = _buildWorkoutMenuItems(workoutList);
-//    _selectedWorkout = workoutList[0];
+    _selectedWorkout = workoutList[0];
 
     _colorMenuItems = _buildColorMenuItems(colorList);
-//    _selectedColor = colorList[0];
+    _selectedColor = colorList[0];
 
     super.initState();
   }
@@ -103,11 +103,14 @@ class _ExcerciseDialogueAdd extends State<ExerciseCreationPopup> {
       elevation: 16,
       child: Container(
         color: Colors.transparent,
-        height: 300.0,
+        height: 220.0,
         child: Column(children: <Widget>[
           Container(
-            color: Colors.red.withOpacity(0.26),
-            width: 140,
+            height: 20,
+          ),
+          Container(
+//            color: Colors.red.withOpacity(0.26),
+            width: 150,
             child: DropdownButton(
               isExpanded: true,
               elevation: 16,
@@ -118,7 +121,10 @@ class _ExcerciseDialogueAdd extends State<ExerciseCreationPopup> {
             ),
           ),
           Container(
-            width: 150,
+            height: 10,
+          ),
+          Container(
+            width: 170,
             child: ButtonTheme(
               alignedDropdown: true,
               child: DropdownButtonHideUnderline(
@@ -131,6 +137,9 @@ class _ExcerciseDialogueAdd extends State<ExerciseCreationPopup> {
                 ),
               ),
             ),
+          ),
+          Container(
+            height: 20,
           ),
           Row(children: <Widget>[
             Container(

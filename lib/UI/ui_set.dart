@@ -15,8 +15,7 @@ class SetUI extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            Expanded(
-                child: Center(
+            Center(
               child: Text(
                 "$rep",
                 textAlign: TextAlign.center,
@@ -25,16 +24,16 @@ class SetUI extends StatelessWidget {
                     fontWeight: FontWeight.bold,
                     color: Colors.white),
               ),
-            )),
+            ),
             Padding(
-              padding: const EdgeInsets.only(left: 6, right: 6),
+              padding:
+                  const EdgeInsets.only(top: 2, bottom: 2, left: 6, right: 6),
               child: Container(
                 color: Colors.white,
                 height: 1.5,
               ),
             ),
-            Expanded(
-                child: Center(
+            Center(
               child: Text(
                 "$weight",
                 textAlign: TextAlign.center,
@@ -43,7 +42,7 @@ class SetUI extends StatelessWidget {
                     fontWeight: FontWeight.normal,
                     color: Colors.white),
               ),
-            )),
+            ),
           ],
         ),
       ),
