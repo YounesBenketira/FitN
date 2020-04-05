@@ -6,26 +6,240 @@ import 'package:flutter/material.dart';
 
 class CalendarCard extends StatelessWidget {
   final Exercise exercise;
+  final bool showSets;
 
   String _title;
   List<Color> _theme = new List();
 
-  CalendarCard({this.exercise}) {
+  CalendarCard({this.exercise, this.showSets}) {
     switch (this.exercise.workout) {
-      case Workout.Bench:
-        this._title = "Bench";
+      case Workout.ArnoldDumbbellPress:
+        this._title = 'Arnold DB Press';
         break;
-      case Workout.Squat:
-        this._title = "Squat";
+      case Workout.OverheadPress:
+        this._title = 'Overhead Press';
         break;
-      case Workout.OverHeadPress:
-        this._title = "OH Press";
+      case Workout.SeatedDumbbellPress:
+        this._title = 'Seated DB Press';
         break;
-      case Workout.BentOverRow:
-        this._title = "BO Row";
+      case Workout.LogPress:
+        this._title = 'Log Press';
+        break;
+      case Workout.OneArmStandingDumbbellPress:
+        this._title = 'Standing DB Press';
+        break;
+      case Workout.PushPress:
+        this._title = 'Push Press';
+        break;
+      case Workout.FrontDumbbellRaise:
+        this._title = 'Front DB Raise';
+        break;
+      case Workout.LateralRaise:
+        this._title = 'Lateral Raise';
+        break;
+      case Workout.RearDeltDumbbellRaise:
+        this._title = 'R. Delt DB Raise';
+        break;
+      case Workout.FacePull:
+        this._title = 'Face Pull';
+        break;
+      case Workout.RearDeltFly:
+        _title = 'R. Delt Fly';
+        break;
+      case Workout.TricepsExtension:
+        this._title = 'Triceps Extension';
+        break;
+      case Workout.CloseGripBenchPress:
+        this._title = 'Close Grip Bench';
+        break;
+      case Workout.OverheadTricepsExtension:
+        this._title = 'OH. Triceps Extension';
+        break;
+      case Workout.Skullcrusher:
+        this._title = 'Skull Crusher';
+        break;
+      case Workout.TricepsDip:
+        this._title = 'Triceps Dip';
+        break;
+      case Workout.RopePushDown:
+        this._title = 'Rope Push Down';
+        break;
+      case Workout.VBarPushDown:
+        this._title = 'V-Bar Push Down';
+        break;
+      case Workout.BarbellCurl:
+        this._title = 'Barbell Curl';
+        break;
+      case Workout.CableCurl:
+        this._title = 'Cable Curl';
+        break;
+      case Workout.DumbbellCurl:
+        this._title = 'Dumbbell Curl';
+        break;
+      case Workout.ConcentrationCurl:
+        this._title = 'Concentration Curl';
+        break;
+      case Workout.HammerCurl:
+        this._title = 'Hammer Curl';
+        break;
+      case Workout.PreacherCurl:
+        this._title = 'Preacher Curl';
+        break;
+      case Workout.InclineDumbbellCurl:
+        this._title = 'Incline DB Curl';
+        break;
+      case Workout.MachineCurl:
+        this._title = 'Machine Curl';
+        break;
+      case Workout.CableCrossover:
+        this._title = 'Cable Crossover';
+        break;
+      case Workout.DeclineBenchPress:
+        this._title = 'Decline Bench';
+        break;
+      case Workout.BenchPress:
+        this._title = 'Bench';
+        break;
+      case Workout.DumbbellFly:
+        this._title = 'Dumbbell Fly';
+        break;
+      case Workout.InclineBenchPress:
+        this._title = 'Incline Bench';
+        break;
+      case Workout.InclineDumbbellFly:
+        this._title = 'Incline Fly';
+        break;
+      case Workout.MachineFly:
+        this._title = 'Machine Fly';
+        break;
+      case Workout.BarbellRow:
+        this._title = 'Barbell Row';
+        break;
+      case Workout.BarbellShrug:
+        this._title = 'Barbell Shrug';
+        break;
+      case Workout.DumbbellShrug:
+        this._title = 'Dumbbell Shrug';
+        break;
+      case Workout.ChinUp:
+        this._title = 'Chin Up';
         break;
       case Workout.Deadlift:
-        this._title = "Deadlift";
+        this._title = 'Deadlift';
+        break;
+      case Workout.DumbbellRow:
+        this._title = 'Dumbbell Row';
+        break;
+      case Workout.GoodMorning:
+        this._title = 'Good Morning';
+        break;
+      case Workout.HammerStrengthRow:
+        this._title = 'Hammer Strength Row';
+        break;
+      case Workout.LatPulldown:
+        this._title = 'Lat Pulldown';
+        break;
+      case Workout.PendlayRow:
+        this._title = 'Pendlay Row';
+        break;
+      case Workout.PullUp:
+        this._title = 'Pull Up';
+        break;
+      case Workout.RackPull:
+        this._title = 'Rack Pull';
+        break;
+      case Workout.SeatedCableRow:
+        this._title = 'Seated Cable Row';
+        break;
+      case Workout.CablePushdown:
+        this._title = 'Cable Pushdown';
+        break;
+      case Workout.BarbellFrontSquat:
+        this._title = 'Front Squat';
+        break;
+      case Workout.BarbellGluteBridge:
+        this._title = 'Glute Bridge';
+        break;
+      case Workout.BarbellSquat:
+        this._title = 'Squat';
+        break;
+      case Workout.DonkeyCalfRaise:
+        this._title = 'Donkey Calf Raise';
+        break;
+      case Workout.GluteHamRaise:
+        this._title = 'Glute Ham Raise';
+        break;
+      case Workout.LegExtension:
+        this._title = 'Leg Extension';
+        break;
+      case Workout.LegPress:
+        this._title = 'Leg Press';
+        break;
+      case Workout.LegCurl:
+        this._title = 'Leg Curl';
+        break;
+      case Workout.RomanianDeadlift:
+        this._title = 'Romanian Deadlift';
+        break;
+      case Workout.SeatedCalfRaise:
+        this._title = 'Seated Calf Raise';
+        break;
+      case Workout.StandingCalfRaise:
+        this._title = 'Standing Calf Raise';
+        break;
+      case Workout.StiffLeggedDeadlift:
+        this._title = 'SL. Deadlift';
+        break;
+      case Workout.SumoDeadlift:
+        this._title = 'Sumo Deadlift';
+        break;
+      case Workout.AbWheelRollout:
+        this._title = 'Ab Wheel Rollout';
+        break;
+      case Workout.CableCrunch:
+        this._title = 'Cable Crunch';
+        break;
+      case Workout.Crunch:
+        this._title = 'Crunch';
+        break;
+      case Workout.DeclineCrunch:
+        this._title = 'Decline Crunch';
+        break;
+      case Workout.DragonFlag:
+        this._title = 'Dragon Flag';
+        break;
+      case Workout.HangingKneeRaise:
+        this._title = 'Knee Raise';
+        break;
+      case Workout.HangingLegRaise:
+        this._title = 'Leg Raise';
+        break;
+      case Workout.Plank:
+        this._title = 'Plank';
+        break;
+      case Workout.SidePlank:
+        this._title = 'Side Plank';
+        break;
+      case Workout.Cycling:
+        this._title = 'Cycling';
+        break;
+      case Workout.Elliptical:
+        this._title = 'Elliptical';
+        break;
+      case Workout.RowingMachine:
+        this._title = 'Rowing Machine';
+        break;
+      case Workout.Running:
+        this._title = 'Running';
+        break;
+      case Workout.Bike:
+        this._title = 'Bike';
+        break;
+      case Workout.Swimming:
+        this._title = 'Swimming';
+        break;
+      case Workout.Walking:
+        this._title = 'Walking';
         break;
     }
 
@@ -69,7 +283,7 @@ class CalendarCard extends StatelessWidget {
       return Positioned(
         top: 13,
         right: 40,
-        left: 150,
+        left: 163,
         child: Container(
           height: 50,
           decoration: BoxDecoration(
@@ -83,6 +297,22 @@ class CalendarCard extends StatelessWidget {
                 return entry;
               }).toList(),
             ],
+          ),
+        ),
+      );
+    }
+
+    Widget _buildSetCount() {
+      return Positioned(
+        top: 16,
+        right: 50,
+        child: Text(
+          'x${setList.length}',
+          style: TextStyle(
+            fontSize: 30,
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+            fontFamily: 'OpenSans',
           ),
         ),
       );
@@ -129,17 +359,18 @@ class CalendarCard extends StatelessWidget {
         _buildCard(),
         Positioned(
           left: 25,
-          top: 20,
+          top: 21,
           child: Text(
             '$_title',
             style: TextStyle(
-              fontSize: 25,
+              fontSize: 22,
               color: Colors.white,
               fontWeight: FontWeight.bold,
+              fontFamily: 'OpenSans',
             ),
           ),
         ),
-        _buildSetList(),
+        showSets ? _buildSetList() : _buildSetCount(),
       ],
     );
   }

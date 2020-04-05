@@ -20,25 +20,309 @@ class ExerciseCard extends StatefulWidget {
   ExerciseCard({this.exercise, this.deleteExercise, this.updateDataSet}) {
     // Dynamically set widget header
     switch (this.exercise.workout) {
-      case Workout.Bench:
-        this._title = "Bench";
-        this._icon = Image.asset("images/BenchTEMP.png");
+      case Workout.ArnoldDumbbellPress:
+        this._title = 'Arnold DB Press';
+        this._icon = Image.asset('images/shoulders.png');
         break;
-      case Workout.Squat:
-        this._title = "Squat";
-        this._icon = Image.asset("images/BarbellTEMP.png");
+      case Workout.OverheadPress:
+        this._title = 'Overhead Press';
+        this._icon = Image.asset('images/shoulders.png');
         break;
-      case Workout.OverHeadPress:
-        this._title = "OH Press";
-        this._icon = Image.asset("images/DumbbellTEMP.png");
+      case Workout.SeatedDumbbellPress:
+        this._title = 'Seated DB Press';
+        this._icon = Image.asset('images/shoulders.png');
         break;
-      case Workout.BentOverRow:
-        this._title = "Row";
-        this._icon = Image.asset("images/WeightsTEMP.png");
+      case Workout.LogPress:
+        this._title = 'Log Press';
+        this._icon = Image.asset('images/shoulders.png');
+        break;
+      case Workout.OneArmStandingDumbbellPress:
+        this._title = 'Standing DB Press';
+        this._icon = Image.asset('images/shoulders.png');
+        break;
+      case Workout.PushPress:
+        this._title = 'Push Press';
+        this._icon = Image.asset('images/shoulders.png');
+        break;
+      case Workout.FrontDumbbellRaise:
+        this._title = 'Front DB Raise';
+        this._icon = Image.asset('images/shoulders.png');
+        break;
+      case Workout.LateralRaise:
+        this._title = 'Lateral Raise';
+        this._icon = Image.asset('images/shoulders.png');
+        break;
+      case Workout.RearDeltDumbbellRaise:
+        this._title = 'R. Delt DB Raise';
+        this._icon = Image.asset('images/shoulders.png');
+        break;
+      case Workout.FacePull:
+        this._title = 'Face Pull';
+        this._icon = Image.asset('images/shoulders.png');
+        break;
+      case Workout.RearDeltFly:
+        this._title = 'R. Delt Fly';
+        this._icon = Image.asset('images/shoulders.png');
+        break;
+      case Workout.TricepsExtension:
+        this._title = 'Triceps Extension';
+        this._icon = Image.asset('images/arms.png');
+        break;
+      case Workout.CloseGripBenchPress:
+        this._title = 'Close Grip Bench';
+        this._icon = Image.asset('images/arms.png');
+        break;
+      case Workout.OverheadTricepsExtension:
+        this._title = 'OH Triceps Ext.';
+        this._icon = Image.asset('images/arms.png');
+        break;
+      case Workout.Skullcrusher:
+        this._title = 'Skull Crusher';
+        this._icon = Image.asset('images/arms.png');
+        break;
+      case Workout.TricepsDip:
+        this._title = 'Triceps Dip';
+        this._icon = Image.asset('images/arms.png');
+        break;
+      case Workout.RopePushDown:
+        this._title = 'Rope Push Down';
+        this._icon = Image.asset('images/arms.png');
+        break;
+      case Workout.VBarPushDown:
+        this._title = 'V-Bar Push Down';
+        this._icon = Image.asset('images/arms.png');
+        break;
+      case Workout.BarbellCurl:
+        this._title = 'Barbell Curl';
+        this._icon = Image.asset('images/arms.png');
+        break;
+      case Workout.CableCurl:
+        this._title = 'Cable Curl';
+        this._icon = Image.asset('images/arms.png');
+        break;
+      case Workout.DumbbellCurl:
+        this._title = 'Dumbbell Curl';
+        this._icon = Image.asset('images/arms.png');
+        break;
+      case Workout.ConcentrationCurl:
+        this._title = 'Concentration Curl';
+        this._icon = Image.asset('images/arms.png');
+        break;
+      case Workout.HammerCurl:
+        this._title = 'Hammer Curl';
+        this._icon = Image.asset('images/arms.png');
+        break;
+      case Workout.PreacherCurl:
+        this._title = 'Preacher Curl';
+        this._icon = Image.asset('images/arms.png');
+        break;
+      case Workout.InclineDumbbellCurl:
+        this._title = 'Incline DB Curl';
+        this._icon = Image.asset('images/arms.png');
+        break;
+      case Workout.MachineCurl:
+        this._title = 'Machine Curl';
+        this._icon = Image.asset('images/arms.png');
+        break;
+      case Workout.CableCrossover:
+        this._title = 'Cable Crossover';
+        this._icon = Image.asset('images/chest.png');
+        break;
+      case Workout.DeclineBenchPress:
+        this._title = 'Decline Bench';
+        this._icon = Image.asset('images/chest.png');
+        break;
+      case Workout.BenchPress:
+        this._title = 'Bench';
+        this._icon = Image.asset('images/chest.png');
+        break;
+      case Workout.DumbbellFly:
+        this._title = 'Dumbbell Fly';
+        this._icon = Image.asset('images/chest.png');
+        break;
+      case Workout.InclineBenchPress:
+        this._title = 'Incline Bench';
+        this._icon = Image.asset('images/chest.png');
+        break;
+      case Workout.InclineDumbbellFly:
+        this._title = 'Incline Fly';
+        this._icon = Image.asset('images/chest.png');
+        break;
+      case Workout.MachineFly:
+        this._title = 'Machine Fly';
+        this._icon = Image.asset('images/chest.png');
+        break;
+      case Workout.BarbellRow:
+        this._title = 'Barbell Row';
+        this._icon = Image.asset('images/back.png');
+        break;
+      case Workout.BarbellShrug:
+        this._title = 'Barbell Shrug';
+        this._icon = Image.asset('images/back.png');
+        break;
+      case Workout.DumbbellShrug:
+        this._title = 'Dumbbell Shrug';
+        this._icon = Image.asset('images/back.png');
+        break;
+      case Workout.ChinUp:
+        this._title = 'Chin Up';
+        this._icon = Image.asset('images/back.png');
         break;
       case Workout.Deadlift:
-        this._title = "Deadlift";
-        this._icon = Image.asset("images/DeadliftTEMP.png");
+        this._title = 'Deadlift';
+        this._icon = Image.asset('images/back.png');
+        break;
+      case Workout.DumbbellRow:
+        this._title = 'Dumbbell Row';
+        this._icon = Image.asset('images/back.png');
+        break;
+      case Workout.GoodMorning:
+        this._title = 'Good Morning';
+        this._icon = Image.asset('images/back.png');
+        break;
+      case Workout.HammerStrengthRow:
+        this._title = 'Hammer Strength Row';
+        this._icon = Image.asset('images/back.png');
+        break;
+      case Workout.LatPulldown:
+        this._title = 'Lat Pulldown';
+        this._icon = Image.asset('images/back.png');
+        break;
+      case Workout.PendlayRow:
+        this._title = 'Pendlay Row';
+        this._icon = Image.asset('images/back.png');
+        break;
+      case Workout.PullUp:
+        this._title = 'Pull Up';
+        this._icon = Image.asset('images/back.png');
+        break;
+      case Workout.RackPull:
+        this._title = 'Rack Pull';
+        this._icon = Image.asset('images/back.png');
+        break;
+      case Workout.SeatedCableRow:
+        this._title = 'Seated Cable Row';
+        this._icon = Image.asset('images/back.png');
+        break;
+      case Workout.CablePushdown:
+        this._title = 'Cable Pushdown';
+        this._icon = Image.asset('images/back.png');
+        break;
+      case Workout.BarbellFrontSquat:
+        this._title = 'Front Squat';
+        this._icon = Image.asset('images/legs.png');
+        break;
+      case Workout.BarbellGluteBridge:
+        this._title = 'Glute Bridge';
+        this._icon = Image.asset('images/legs.png');
+        break;
+      case Workout.BarbellSquat:
+        this._title = 'Squat';
+        this._icon = Image.asset('images/legs.png');
+        break;
+      case Workout.DonkeyCalfRaise:
+        this._title = 'Donkey Calf Raise';
+        this._icon = Image.asset('images/legs.png');
+        break;
+      case Workout.GluteHamRaise:
+        this._title = 'Glute Ham Raise';
+        this._icon = Image.asset('images/legs.png');
+        break;
+      case Workout.LegExtension:
+        this._title = 'Leg Extension';
+        this._icon = Image.asset('images/legs.png');
+        break;
+      case Workout.LegPress:
+        this._title = 'Leg Press';
+        this._icon = Image.asset('images/legs.png');
+        break;
+      case Workout.LegCurl:
+        this._title = 'Leg Curl';
+        this._icon = Image.asset('images/legs.png');
+        break;
+      case Workout.RomanianDeadlift:
+        this._title = 'Romanian Deadlift';
+        this._icon = Image.asset('images/legs.png');
+        break;
+      case Workout.SeatedCalfRaise:
+        this._title = 'Seated Calf Raise';
+        this._icon = Image.asset('images/legs.png');
+        break;
+      case Workout.StandingCalfRaise:
+        this._title = 'Standing Calf Raise';
+        this._icon = Image.asset('images/legs.png');
+        break;
+      case Workout.StiffLeggedDeadlift:
+        this._title = 'SL. Deadlift';
+        this._icon = Image.asset('images/legs.png');
+        break;
+      case Workout.SumoDeadlift:
+        this._title = 'Sumo Deadlift';
+        this._icon = Image.asset('images/legs.png');
+        break;
+      case Workout.AbWheelRollout:
+        this._title = 'Ab Wheel Rollout';
+        this._icon = Image.asset('images/abs.png');
+        break;
+      case Workout.CableCrunch:
+        this._title = 'Cable Crunch';
+        this._icon = Image.asset('images/abs.png');
+        break;
+      case Workout.Crunch:
+        this._title = 'Crunch';
+        this._icon = Image.asset('images/abs.png');
+        break;
+      case Workout.DeclineCrunch:
+        this._title = 'Decline Crunch';
+        this._icon = Image.asset('images/abs.png');
+        break;
+      case Workout.DragonFlag:
+        this._title = 'Dragon Flag';
+        this._icon = Image.asset('images/abs.png');
+        break;
+      case Workout.HangingKneeRaise:
+        this._title = 'Knee Raise';
+        this._icon = Image.asset('images/abs.png');
+        break;
+      case Workout.HangingLegRaise:
+        this._title = 'Leg Raise';
+        this._icon = Image.asset('images/abs.png');
+        break;
+      case Workout.Plank:
+        this._title = 'Plank';
+        this._icon = Image.asset('images/abs.png');
+        break;
+      case Workout.SidePlank:
+        this._title = 'Side Plank';
+        this._icon = Image.asset('images/abs.png');
+        break;
+      case Workout.Cycling:
+        this._title = 'Cycling';
+        this._icon = Image.asset('images/cardio.png');
+        break;
+      case Workout.Elliptical:
+        this._title = 'Elliptical';
+        this._icon = Image.asset('images/cardio.png');
+        break;
+      case Workout.RowingMachine:
+        this._title = 'Rowing Machine';
+        this._icon = Image.asset('images/cardio.png');
+        break;
+      case Workout.Running:
+        this._title = 'Running';
+        this._icon = Image.asset('images/cardio.png');
+        break;
+      case Workout.Bike:
+        this._title = 'Bike';
+        this._icon = Image.asset('images/cardio.png');
+        break;
+      case Workout.Swimming:
+        this._title = 'Swimming';
+        this._icon = Image.asset('images/cardio.png');
+        break;
+      case Workout.Walking:
+        this._title = 'Walking';
+        this._icon = Image.asset('images/cardio.png');
         break;
     }
 
@@ -92,9 +376,32 @@ class _ExerciseCardState extends State<ExerciseCard> {
       children: <Widget>[
         _buildCard(),
         _buildHeader(),
+        Positioned(
+          left: 6,
+          child: Container(height: 70, child: widget._icon),
+        ),
+        Positioned(
+          left: 78,
+          top: 12.5,
+          child: Container(
+            width: 170,
+            height: 30,
+            child: FittedBox(
+                alignment: Alignment.centerLeft,
+                fit: BoxFit.contain,
+                child: Text(
+                  widget._title,
+                  style: TextStyle(
+                      fontSize: 30,
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontFamily: "OpenSans"),
+                )),
+          ),
+        ),
         _buildButtons(),
         Positioned(
-            top: 65,
+            top: 70,
             left: 22.5,
             child: Text(
               'x${widget.exercise.setList.length.toString()}',
@@ -138,7 +445,7 @@ class _ExerciseCardState extends State<ExerciseCard> {
               ),
               borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(20),
-                topRight: Radius.circular(50),
+                topRight: Radius.circular(30),
                 bottomLeft: Radius.circular(20),
                 bottomRight: Radius.circular(20),
               )),
@@ -154,26 +461,7 @@ class _ExerciseCardState extends State<ExerciseCard> {
       child: Align(
           alignment: Alignment.topLeft,
           child: Row(
-            children: <Widget>[
-              Container(height: 62.5, child: widget._icon),
-              Container(
-                width: 5,
-              ),
-              Container(
-                width: 150,
-                height: 35,
-                child: FittedBox(
-                    alignment: Alignment.centerLeft,
-                    fit: BoxFit.contain,
-                    child: Text(
-                      widget._title,
-                      style: TextStyle(
-                          fontSize: 25,
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold),
-                    )),
-              ),
-            ],
+            children: <Widget>[],
           )),
     );
   }
@@ -305,9 +593,7 @@ class _ExerciseCardState extends State<ExerciseCard> {
                       child: TextField(
                           textAlign: TextAlign.center,
                           style: TextStyle(
-                            color: Theme
-                                .of(context)
-                                .primaryColorDark,
+                            color: Theme.of(context).primaryColorDark,
                             fontSize: 20,
                           ),
                           controller: _repController,
@@ -463,12 +749,12 @@ class _ExerciseCardState extends State<ExerciseCard> {
 
     return Positioned(
       top: 12,
-      right: 35,
+      right: 25,
       child: Row(
         children: <Widget>[
           _minusBtn(),
           Container(
-            width: 10,
+            width: 5,
           ),
           _plusBtn(),
         ],

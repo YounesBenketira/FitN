@@ -85,18 +85,19 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        title: Text(
-          'FitN',
-          style: TextStyle(
-            fontSize: 45,
-            color: Colors.black,
-            fontFamily: 'ShareTech',
-          ),
-        ),
-        backgroundColor: Colors.white,
-      ),
+      backgroundColor: Colors.white,
+//      appBar: AppBar(
+//        centerTitle: true,
+//        title: Text(
+//          'FitN',
+//          style: TextStyle(
+//            fontSize: 45,
+//            color: Colors.black,
+//            fontFamily: 'OpenSans',
+//          ),
+//        ),
+//        backgroundColor: Colors.white,
+//      ),
       body: PageStorage(
         child: currentPage,
         bucket: bucket,

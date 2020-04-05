@@ -45,13 +45,16 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
-    - images/unnamed.jpg
-    - images/BenchTEMP.png
-    - images/BarbellTEMP.png
-    - images/DeadliftTEMP.png
-    - images/WeightsTEMP.png
-    - images/DumbbellTEMP.png
-
+    - images/back.png
+    - images/arms.png
+    - images/cardio.png
+    - images/shoulders.png
+    - images/legs.png
+    - images/abs.png
+    - images/chest.png
+    - images/Backgrounds/bg1.jpg
+    - images/Backgrounds/bg2.jpg
+    - images/Backgrounds/bg3.jpg
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

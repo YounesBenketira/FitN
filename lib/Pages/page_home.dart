@@ -62,6 +62,8 @@ class _HomePageState extends State<HomePage> {
 
       if (_dateIndex == null) {
         setState(() {
+          if (widget.dataSet == null) _updateDataSet();
+
           widget.dataSet
               .add({'date': _todaysDate.toIso8601String(), 'exercises': []});
           _dateIndex = widget.dataSet.length - 1;
@@ -161,9 +163,9 @@ class _HomePageState extends State<HomePage> {
 //                ),
 //              ),
           child: FittedBox(
-              fit: BoxFit.fill, child: Image.asset('images/unnamed.jpg')),
-//              child: Image.network(
-//                  'https://wallpapercave.com/wp/wp4250294.jpg'),
+            fit: BoxFit.fill,
+            child: Image.asset('images/Backgrounds/bg1.jpg'),
+          ),
         ),
         Padding(
           padding: const EdgeInsets.only(top: 10.0),
@@ -197,7 +199,7 @@ class _HomePageState extends State<HomePage> {
           height: 40,
           width: 120,
           child: RaisedButton(
-            color: Colors.lightBlueAccent,
+            color: Colors.lightBlue,
             elevation: 5,
             onPressed: () {},
             child: Text(
@@ -207,8 +209,8 @@ class _HomePageState extends State<HomePage> {
                 fontSize: 24,
               ),
             ),
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+//            shape:
+//                RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
           ),
         ),
         Container(
@@ -230,27 +232,46 @@ class _HomePageState extends State<HomePage> {
             ),
             highlightElevation: 8,
             color: Colors.greenAccent[400],
+//          color: Colors.lightBlueAccent,
             onPressed: () {
               Navigator.of(context).pushNamed(
                 '/creationPage',
-                arguments: 'Doggiechan',
+                arguments: addExercise,
               );
-//              showDialog(
-//                context: context,
-//                builder: (context) {
-//                  List<dynamic> exerciseList = new List();
-//                  if (widget.dataSet.length != 0)
-//                    exerciseList = widget.dataSet[_dateIndex]['exercises'];
-//                  return ExerciseCreationPopup(
-//                    exerciseList: exerciseList,
-//                    addExercise: addExercise,
-//                  );
-//                },
-//              );
             },
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+//            shape:
+//                RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
           ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildButtons2() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: <Widget>[
+        FlatButton(
+          color: Colors.white,
+          highlightColor: Colors.blue.withOpacity(0.2),
+          child: Text(
+            'Copy',
+            style: TextStyle(
+                color: Colors.blue, fontSize: 25, fontFamily: 'OpenSans'),
+          ),
+          onPressed: () {},
+        ),
+        FlatButton(
+          color: Colors.white,
+          highlightColor: Colors.greenAccent.withOpacity(0.2),
+          child: Text(
+            'Add Exercise',
+            style: TextStyle(
+                color: Colors.greenAccent,
+                fontSize: 25,
+                fontFamily: 'OpenSans'),
+          ),
+          onPressed: () {},
         ),
       ],
     );
@@ -273,28 +294,31 @@ class _HomePageState extends State<HomePage> {
         values = snapshot.data[_dateIndex]['exercises'];
       }
 
-      return new ListView.builder(
-        physics: const NeverScrollableScrollPhysics(),
-        primary: false,
-        shrinkWrap: true,
-        itemCount: values.length,
-        itemBuilder: (BuildContext context, int index) {
-          Exercise temp;
-          if (values[index].runtimeType == Exercise)
-            temp = values[index];
-          else
-            temp = Exercise.fromJson(values[index]);
+      return Container(
+//        color: Colors.purple,
+        child: new ListView.builder(
+          physics: const NeverScrollableScrollPhysics(),
+          primary: false,
+          shrinkWrap: true,
+          itemCount: values.length,
+          itemBuilder: (BuildContext context, int index) {
+            Exercise temp;
+            if (values[index].runtimeType == Exercise)
+              temp = values[index];
+            else
+              temp = Exercise.fromJson(values[index]);
 
-          return new Column(
-            children: <Widget>[
-              ExerciseCard(
-                exercise: temp,
-                deleteExercise: removeExercise,
-                updateDataSet: _updateDataSet,
-              ),
-            ],
-          );
-        },
+            return new Column(
+              children: <Widget>[
+                ExerciseCard(
+                  exercise: temp,
+                  deleteExercise: removeExercise,
+                  updateDataSet: _updateDataSet,
+                ),
+              ],
+            );
+          },
+        ),
       );
     }
 

@@ -20,11 +20,12 @@ class _CalendarPageState extends State<CalendarPage>
   AnimationController _animationController;
   CalendarController _calendarController;
   DateTime _selectedDay;
+  bool _showSets;
 
   @override
   void initState() {
     _storage = Storage();
-
+    _showSets = false;
     // @TODO exercise count
     _events = {};
 
@@ -82,6 +83,23 @@ class _CalendarPageState extends State<CalendarPage>
       scrollDirection: Axis.vertical,
       children: <Widget>[
         _buildTableCalendarWithBuilders(),
+        Padding(
+          padding: const EdgeInsets.only(left: 15.0, right: 15.0),
+          child: FlatButton(
+            color: Colors.lightBlueAccent.withOpacity(0.2),
+            highlightColor: Colors.blue.withOpacity(0.2),
+            child: Text(
+              'Show Details',
+              style: TextStyle(
+                  color: Colors.blue, fontSize: 25, fontFamily: 'OpenSans'),
+            ),
+            onPressed: () {
+              setState(() {
+                _showSets = !_showSets;
+              });
+            },
+          ),
+        ),
         _buildExerciseList(),
 //        _buildExerciseList2(),
       ],
@@ -248,10 +266,10 @@ class _CalendarPageState extends State<CalendarPage>
         ...exerciseList.map((entry) {
           return CalendarCard(
             exercise: Exercise.fromJson(entry),
+            showSets: _showSets,
           );
         }).toList(),
       ],
     );
   }
-
 }
