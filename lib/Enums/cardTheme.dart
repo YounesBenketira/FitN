@@ -1,1 +1,1 @@
-enum ColorTheme { Yellow, Blue, Purple, Peach, Green }
+enum ColorTheme { Red, Blue, Pink, Peach, Green }

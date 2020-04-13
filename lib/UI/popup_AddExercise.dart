@@ -41,14 +41,14 @@ class _ExcerciseDialogueAdd extends State<ExerciseCreationPopup> {
     for (ColorTheme color in colors) {
       MaterialColor clr;
       switch (color) {
-        case ColorTheme.Yellow:
-          clr = Colors.yellow;
+        case ColorTheme.Red:
+          clr = Colors.red;
           break;
         case ColorTheme.Blue:
           clr = Colors.blue;
           break;
-        case ColorTheme.Purple:
-          clr = Colors.purple;
+        case ColorTheme.Pink:
+          clr = Colors.pink;
           break;
         case ColorTheme.Peach:
           clr = Colors.orange;

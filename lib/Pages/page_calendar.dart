@@ -53,7 +53,7 @@ class _CalendarPageState extends State<CalendarPage>
     List<dynamic> data = await _storage.readData();
 
     setState(() {
-      widget.dataSet = data;
+      if (data != null) widget.dataSet = data;
     });
 
     setState(() {
@@ -83,23 +83,7 @@ class _CalendarPageState extends State<CalendarPage>
       scrollDirection: Axis.vertical,
       children: <Widget>[
         _buildTableCalendarWithBuilders(),
-        Padding(
-          padding: const EdgeInsets.only(left: 15.0, right: 15.0),
-          child: FlatButton(
-            color: Colors.lightBlueAccent.withOpacity(0.2),
-            highlightColor: Colors.blue.withOpacity(0.2),
-            child: Text(
-              'Show Details',
-              style: TextStyle(
-                  color: Colors.blue, fontSize: 25, fontFamily: 'OpenSans'),
-            ),
-            onPressed: () {
-              setState(() {
-                _showSets = !_showSets;
-              });
-            },
-          ),
-        ),
+        _buildShowDetailBtn(),
         _buildExerciseList(),
 //        _buildExerciseList2(),
       ],
@@ -141,7 +125,7 @@ class _CalendarPageState extends State<CalendarPage>
         ),
         headerStyle: HeaderStyle(
           titleTextStyle:
-          TextStyle().copyWith(color: Colors.black, fontSize: 23),
+              TextStyle().copyWith(color: Colors.black, fontSize: 23),
           centerHeaderTitle: true,
           formatButtonVisible: false,
         ),
@@ -215,6 +199,12 @@ class _CalendarPageState extends State<CalendarPage>
   }
 
   Widget _buildEventsMarker(DateTime date, List events) {
+    int counter = 0;
+//    print(events[0]);
+    for (int i = 0; i < events.length; i++)
+      if (events[i]['setList'].length > 0) counter++;
+
+    if (counter == 0) return Container();
     return AnimatedContainer(
       duration: const Duration(milliseconds: 300),
       decoration: BoxDecoration(
@@ -233,7 +223,7 @@ class _CalendarPageState extends State<CalendarPage>
       height: 16.0,
       child: Center(
         child: Text(
-          '${events.length}',
+          '$counter',
           style: TextStyle().copyWith(
             color: Colors.white,
             fontSize: 12.0,
@@ -241,6 +231,39 @@ class _CalendarPageState extends State<CalendarPage>
         ),
       ),
     );
+  }
+
+  Widget _buildShowDetailBtn() {
+    bool showButton = false;
+    if (_events[_selectedDay] == null)
+      return Container();
+    else {
+      for (int i = 0; i < _events[_selectedDay].length; i++) {
+//      print(_events[_selectedDay][i]['setList']);
+        if (_events[_selectedDay][i]['setList'].length > 0)
+          showButton = true;
+      }
+
+      if (!showButton) return Container();
+
+      return Padding(
+        padding: const EdgeInsets.only(left: 15.0, right: 15.0),
+        child: FlatButton(
+          color: Colors.lightBlueAccent.withOpacity(0.1),
+          highlightColor: Colors.blue.withOpacity(0.2),
+          child: Text(
+            'Show Details',
+            style: TextStyle(
+                color: Colors.blue, fontSize: 25, fontFamily: 'OpenSans'),
+          ),
+          onPressed: () {
+            setState(() {
+              _showSets = !_showSets;
+            });
+          },
+        ),
+      );
+    }
   }
 
   Widget _buildExerciseList() {
@@ -264,6 +287,8 @@ class _CalendarPageState extends State<CalendarPage>
     return Column(
       children: <Widget>[
         ...exerciseList.map((entry) {
+          if (entry['setList'].length == 0) return Container();
+
           return CalendarCard(
             exercise: Exercise.fromJson(entry),
             showSets: _showSets,

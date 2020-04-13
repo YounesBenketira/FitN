@@ -54,11 +54,28 @@ class _MyHomePageState extends State<MyHomePage> {
   final PageStorageBucket bucket = PageStorageBucket();
   List<dynamic> dataList;
 
+  void _savePageData(var data) {
+    setState(() {
+      PageStorage.of(context)
+          .writeState(context, data, identifier: ValueKey(homeKey));
+    });
+  }
+
+  _readPageData() {
+    var data = PageStorage.of(context)
+        .readState(context, identifier: ValueKey(homeKey));
+//    print('nigger');
+//    print(data);
+    return data;
+  }
+
   @override
   void initState() {
     homePage = HomePage(
       key: homeKey,
       dataSet: dataList,
+      savePageData: _savePageData,
+      readPageData: _readPageData,
     ); //
 
     calendarPage = CalendarPage(
@@ -86,18 +103,6 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-//      appBar: AppBar(
-//        centerTitle: true,
-//        title: Text(
-//          'FitN',
-//          style: TextStyle(
-//            fontSize: 45,
-//            color: Colors.black,
-//            fontFamily: 'OpenSans',
-//          ),
-//        ),
-//        backgroundColor: Colors.white,
-//      ),
       body: PageStorage(
         child: currentPage,
         bucket: bucket,

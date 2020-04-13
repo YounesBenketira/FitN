@@ -7,7 +7,9 @@ import 'package:path_provider/path_provider.dart';
 
 class Storage {
   static DateTime now = new DateTime.now();
+
   static DateTime todaysDate = new DateTime(now.year, now.month, now.day);
+//  static DateTime todaysDate = new DateTime(2020, 4, 12);
 
   Future<String> get localPath async {
     final dir = await getApplicationDocumentsDirectory();
@@ -46,6 +48,7 @@ class Storage {
   void saveSet(Exercise exercise, Function updateDataSet) async {
     return await readData().then((var data) async {
       List<dynamic> dataHolder = data;
+//      print(data);
       for (int i = 0; i < dataHolder.length; i++)
         if (dataHolder[i]['date'] == todaysDate.toIso8601String()) {
           Map<String, dynamic> setList =

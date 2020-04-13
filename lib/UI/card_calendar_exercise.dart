@@ -245,25 +245,25 @@ class CalendarCard extends StatelessWidget {
 
     // Dynamically set widget theme
     switch (this.exercise.theme) {
-      case ColorTheme.Yellow:
-        _theme.add(Colors.yellow[600]);
-        _theme.add(Colors.yellow[700]);
+      case ColorTheme.Red:
+        _theme.add(Color(0xffe52d27));
+        _theme.add(Color(0xffFF512F));
         break;
       case ColorTheme.Blue:
-        _theme.add(Colors.lightBlue[200]);
-        _theme.add(Colors.lightBlue[500]);
+        _theme.add(Color(0xff17EAD9));
+        _theme.add(Color(0xff6078EA));
         break;
-      case ColorTheme.Purple:
-        _theme.add(Colors.purpleAccent[200]);
-        _theme.add(Colors.purpleAccent[700]);
+      case ColorTheme.Pink:
+        _theme.add(Color(0xffc471f5));
+        _theme.add(Color(0xfffa71cd));
         break;
       case ColorTheme.Peach:
-        _theme.add(Colors.redAccent[100]);
-        _theme.add(Colors.orangeAccent[700]);
+        _theme.add(Color(0xffFCE38A));
+        _theme.add(Color(0xffF38181));
         break;
       case ColorTheme.Green:
-        _theme.add(Colors.greenAccent);
-        _theme.add(Colors.greenAccent[700]);
+        _theme.add(Color(0xff42E695));
+        _theme.add(Color(0xff3BB2B8));
         break;
     }
   }
@@ -282,8 +282,8 @@ class CalendarCard extends StatelessWidget {
     Widget _buildSetList() {
       return Positioned(
         top: 13,
-        right: 40,
-        left: 163,
+        right: 100,
+        left: 22,
         child: Container(
           height: 50,
           decoration: BoxDecoration(
@@ -304,7 +304,7 @@ class CalendarCard extends StatelessWidget {
 
     Widget _buildSetCount() {
       return Positioned(
-        top: 16,
+        top: 14,
         right: 50,
         child: Text(
           'x${setList.length}',
@@ -327,7 +327,8 @@ class CalendarCard extends StatelessWidget {
           decoration: BoxDecoration(
               boxShadow: [
                 BoxShadow(
-                  color: _theme[0].withOpacity(0.9),
+//                  color: _theme[0].withOpacity(0.9),
+                  color: Colors.grey.withOpacity(0.7),
                   blurRadius: 8.0, // has the effect of softening the shadow
                   spreadRadius: 1, // has the effect of extending the shadow
                   offset: Offset(
@@ -359,18 +360,19 @@ class CalendarCard extends StatelessWidget {
         _buildCard(),
         Positioned(
           left: 25,
-          top: 21,
+          top: 22,
           child: Text(
-            '$_title',
+            showSets ? '' : '$_title',
             style: TextStyle(
-              fontSize: 22,
+              fontSize: 20,
               color: Colors.white,
               fontWeight: FontWeight.bold,
               fontFamily: 'OpenSans',
             ),
           ),
         ),
-        showSets ? _buildSetList() : _buildSetCount(),
+        showSets ? _buildSetList() : Container(),
+        _buildSetCount(),
       ],
     );
   }

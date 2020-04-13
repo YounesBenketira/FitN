@@ -19,7 +19,7 @@ class _ExerciseCreatorState extends State<ExerciseCreator> {
     'Overhead Press',
     'Seated Dumbbell Press',
     'Log Press',
-    'One Arm Standing Dumbbell Press',
+    'Standing Dumbbell Press',
     'Push Press',
     'Front Dumbbell Raise',
     'Lateral Raise',
@@ -137,11 +137,26 @@ class _ExerciseCreatorState extends State<ExerciseCreator> {
   ];
 
   List colors = [
-    Colors.lightBlue[500],
-    Colors.greenAccent[700],
-    Colors.deepOrange[500],
-    Colors.purpleAccent[700],
-    Colors.yellow[700],
+    [
+      Color(0xff17EAD9),
+      Color(0xff6078EA),
+    ],
+    [
+      Color(0xffFCE043),
+      Color(0xffFB7BA2),
+    ],
+    [
+      Color(0xff42E695),
+      Color(0xff3BB2B8),
+    ],
+    [
+      Color(0xfffa71cd),
+      Color(0xffc471f5),
+    ],
+//    [
+//      Color(0xffDD2476),
+//      Color(0xffFF512F),
+//    ],
   ];
 
   List allExercises = List();
@@ -279,115 +294,88 @@ class _ExerciseCreatorState extends State<ExerciseCreator> {
         });
         break;
       case 3: // Create Exercise and change screens
-        Color temp = selected;
-        if (temp == Color(0xfffbc02d)) // yellow
-          selectedColor = ColorTheme.Yellow;
-        else if (temp == Color(0xff03a9f4)) // blue
+        List temp = selected;
+        if (temp[0] == Color(0xff17EAD9)) // yellow
           selectedColor = ColorTheme.Blue;
-        else if (temp == Color(0xffaa00ff)) // purple
-          selectedColor = ColorTheme.Purple;
-        else if (temp == Color(0xffff5722)) // peach
+        else if (temp[0] == Color(0xffFCE043)) // blue
           selectedColor = ColorTheme.Peach;
-        else if (temp == Color(0xff00c853)) // green
+        else if (temp[0] == Color(0xff42E695)) // purple
           selectedColor = ColorTheme.Green;
+        else if (temp[0] == Color(0xfffa71cd)) // peach
+          selectedColor = ColorTheme.Pink;
+//        else if (temp[0] == Color(0xffDD2476)) // green
+//          selectedColor = ColorTheme.Yellow;
 
         Exercise exercise =
             Exercise(workout: selectedWorkout, theme: selectedColor);
 
         widget.addExercise(exercise);
-
         Navigator.of(context).pushNamedAndRemoveUntil(
           '/',
           (_) => false,
         );
         break;
     }
-
-//    switch (_index) {
-//      case -1: // Show Categories
-//        setState(() {
-//          displayData = categories;
-//          _title = 'Select Category';
-//        });
-//
-//        break;
-//      case 0: // Show Exercise List
-//        for (int i = 0; i < data.length; i++) {
-//          if (data[i]['Category'] == selected) {
-//            setState(() {
-//              displayData = data[i]['Exercises'];
-//              _title = 'Select Exercise';
-//            });
-//
-//            return;
-//          }
-//        }
-//        break;
-//      case 1: // Show Color List
-//        if(selected is !List)
-//          selectedWorkout = Workout.values.firstWhere(
-//              (e) => e.toString().substring(8) == selected.replaceAll(' ', ''));
-//        setState(() {
-//          displayData = colors;
-//          _title = 'Select Color';
-//        });
-//
-//        break;
-//      case 2:
-//        Color temp = selected;
-//        if (temp == Color(0xfffbc02d)) // yellow
-//          selectedColor = ColorTheme.Yellow;
-//        else if (temp == Color(0xff03a9f4)) // blue
-//          selectedColor = ColorTheme.Blue;
-//        else if (temp == Color(0xffaa00ff)) // purple
-//          selectedColor = ColorTheme.Purple;
-//        else if (temp == Color(0xffff5722)) // peach
-//          selectedColor = ColorTheme.Peach;
-//        else if (temp == Color(0xff00c853)) // green
-//          selectedColor = ColorTheme.Green;
-//
-//        Exercise exercise =
-//            Exercise(workout: selectedWorkout, theme: selectedColor);
-//
-//        widget.addExercise(exercise);
-//
-//        Navigator.of(context).pushNamedAndRemoveUntil(
-//          '/',
-//          (_) => false,
-//        );
-//        break;
-//    }
   }
 
   Widget _buildList(List display) {
     return Column(
       children: <Widget>[
         ...display.map((entry) {
-          return Container(
-            width: double.infinity,
-            child: FlatButton(
+//          print(entry);
+          return Padding(
+            padding: const EdgeInsets.only(top: 8.0, left: 8.0, right: 8.0),
+            child: Container(
+              width: double.infinity,
+              child: FlatButton(
 //                elevation: 2,
 //              color: Colors.blue,
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: entry is String
-                    ? FittedBox(
-                        child: Text(
-                          entry,
-                          style:
-                              TextStyle(fontSize: 20, fontFamily: "OpenSans"),
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: entry is String
+                      ? FittedBox(
+                    child: Text(
+                      entry,
+                      style:
+                      TextStyle(fontSize: 20, fontFamily: "OpenSans"),
+                    ),
+                  )
+                      : Container(
+                    decoration: BoxDecoration(
+                        boxShadow: [
+                          BoxShadow(
+//                  color: widget._theme[0].withOpacity(0.9),
+                            color: Colors.grey.withOpacity(0.7),
+                            blurRadius: 5.0,
+                            // has the effect of softening the shadow
+                            spreadRadius: 3,
+                            // has the effect of extending the shadow
+                            offset: Offset(
+                              2.0, // horizontal, move right 10
+                              4.0, // vertical, move down 10
+                            ),
+                          )
+                        ],
+                        gradient: LinearGradient(
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                          colors: [
+                            entry[0],
+                            entry[1],
+                          ],
+//                              colors: entry,
                         ),
-                      )
-                    : Container(
-                        color: entry,
-                        width: double.infinity,
-                        height: 30,
-                      ),
+                        borderRadius:
+                        BorderRadius.all(Radius.circular(10))),
+                    width: double.infinity,
+                    height: 35,
+                  ),
+                ),
+                onPressed: () {
+                  _index++;
+                  _changeList(entry);
+                },
               ),
-              onPressed: () {
-                _index++;
-                _changeList(entry);
-              },
             ),
           );
         }).toList(),
