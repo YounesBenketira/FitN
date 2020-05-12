@@ -64,7 +64,6 @@ class _MyHomePageState extends State<MyHomePage> {
   _readPageData() {
     var data = PageStorage.of(context)
         .readState(context, identifier: ValueKey(homeKey));
-//    print('nigger');
 //    print(data);
     return data;
   }
@@ -73,7 +72,7 @@ class _MyHomePageState extends State<MyHomePage> {
   void initState() {
     homePage = HomePage(
       key: homeKey,
-      dataSet: dataList,
+//      dataSet: dataList,
       savePageData: _savePageData,
       readPageData: _readPageData,
     ); //
@@ -126,7 +125,7 @@ class _MyHomePageState extends State<MyHomePage> {
       items: <BottomNavigationBarItem>[
         BottomNavigationBarItem(
           icon: Icon(Icons.home),
-          title: Text("Home"),
+          title: Text("Today"),
         ),
         BottomNavigationBarItem(
           icon: Icon(Icons.calendar_today),
@@ -134,10 +133,10 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
         BottomNavigationBarItem(
           icon: Icon(Icons.multiline_chart),
-          title: Text("Statistics"),
+          title: Text("Information"),
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.verified_user),
+          icon: Icon(Icons.account_box),
           title: Text("Profile"),
         ),
       ],

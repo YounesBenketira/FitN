@@ -83,17 +83,36 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       List<dynamic> dataSet = value;
 
       _dateIndex = null;
+      DateTime temp;
       for (int i = 0; i < dataSet.length; i++) {
-        if (DateTime.parse(dataSet[i]['date']) == _todaysDate) {
+        DateTime selectedDate = DateTime.parse(dataSet[i]['date']);
+
+        if (selectedDate == temp) {
+          dataSet.removeAt(i - 1);
+          _storage.save(dataSet);
+        }
+
+        if (selectedDate == _todaysDate) {
           setState(() {
             _dateIndex = i;
           });
+        } else {
+//          print(dataSet);
+          if (dataSet[i]['exercises'].length == 0) {
+            print("Removing Empty Day! " + dataSet[i]["date"]);
+            dataSet.removeAt(i);
+          }
+          _storage.save(dataSet);
         }
+
+        temp = selectedDate;
       }
 
       if (_dateIndex == null) {
         setState(() {
           if (widget.dataSet == null) _updateDataSet();
+
+          print('Date Index was null so, added another entry of today');
 
           widget.dataSet
               .add({'date': _todaysDate.toIso8601String(), 'exercises': []});
@@ -315,7 +334,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
               height: 60,
               decoration: BoxDecoration(
                 border:
-                Border.all(color: Colors.white.withOpacity(0.8), width: 2),
+                    Border.all(color: Colors.white.withOpacity(0.8), width: 2),
                 borderRadius: BorderRadius.all(Radius.circular(20)),
               ),
               child: Row(
@@ -330,8 +349,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     onPressed: () {
                       setState(() {
                         showTimer = false;
-                        widget.timer.cancel();
-                        widget.timer = null;
+                        if (widget.timer != null) {
+                          widget.timer.cancel();
+                          widget.timer = null;
+                        }
                         countdownTime = '00:00';
                         timeController.text = '';
                       });
@@ -642,7 +663,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         Container(
           height: 40,
 //          width: 120,
-//          color: Colors.transparent,
+//          color: Colors.pink,
           child: RaisedButton(
 //            shape: RoundedRectangleBorder(
 //                borderRadius: BorderRadius.all(
