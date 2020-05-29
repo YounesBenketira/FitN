@@ -84,40 +84,64 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
       _dateIndex = null;
       DateTime temp;
+
       for (int i = 0; i < dataSet.length; i++) {
         DateTime selectedDate = DateTime.parse(dataSet[i]['date']);
 
+//        print(temp);
+//        print(selectedDate);
+//        print("");
+
+        // If duplicates Remove dupes
         if (selectedDate == temp) {
           dataSet.removeAt(i - 1);
+          i--;
           _storage.save(dataSet);
         }
 
+        // if todays date Found set DateIndex
         if (selectedDate == _todaysDate) {
           setState(() {
             _dateIndex = i;
           });
-        } else {
-//          print(dataSet);
-          if (dataSet[i]['exercises'].length == 0) {
-            print("Removing Empty Day! " + dataSet[i]["date"]);
-            dataSet.removeAt(i);
-          }
-          _storage.save(dataSet);
         }
+//        else {
+//          print(dataSet[i]);
+//          if (dataSet[i]['exercises'].length == 0) {
+//            print("Removing Empty Day! " + dataSet[i]["date"]);
+//            dataSet.removeAt(i);
+//            i--;
+//          }
+//          _storage.save(dataSet);
+//        }
 
         temp = selectedDate;
       }
 
+      if (dataSet.length != 0) {
+        DateTime latestDay =
+            DateTime.parse(dataSet[dataSet.length - 1]["date"]);
+        int daysInBetween = _todaysDate.difference(latestDay).inDays;
+//        print(daysInBetween);
+
+        for (int i = 1; i < daysInBetween; i++) {
+          DateTime missedDay = latestDay.add(Duration(days: 1) * i);
+          print("Adding missing day: " + missedDay.toIso8601String());
+          dataSet.add({'date': missedDay.toIso8601String(), 'exercises': []});
+        }
+        _storage.save(dataSet);
+      }
+
       if (_dateIndex == null) {
         setState(() {
-          if (widget.dataSet == null) _updateDataSet();
+          if (dataSet == null) _updateDataSet();
 
           print('Date Index was null so, added another entry of today');
+          print(_todaysDate);
 
-          widget.dataSet
-              .add({'date': _todaysDate.toIso8601String(), 'exercises': []});
-          _dateIndex = widget.dataSet.length - 1;
-          _storage.save(widget.dataSet);
+          dataSet.add({'date': _todaysDate.toIso8601String(), 'exercises': []});
+          _dateIndex = dataSet.length - 1;
+          _storage.save(dataSet);
         });
       }
     });
@@ -279,16 +303,18 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   }
 
   Widget _buildPageHeader() {
-    if (widget.dataSet == null || widget.dataSet.length == 0)
-      widget.dataSet = [
-        {'date': _todaysDate.toIso8601String(), 'exercises': []}
-      ];
-    if (_dateIndex == null) {
-      if (widget.dataSet.length == 0)
-        _dateIndex = 0;
-      else
-        _dateIndex = widget.dataSet.length - 1;
-    }
+    // widget.dataSet == null ||
+//    if (widget.dataSet.length == 0) {
+//      widget.dataSet = [
+//        {'date': _todaysDate.toIso8601String(), 'exercises': []}
+//      ];
+//    }
+//    if (_dateIndex == null) {
+//      if (widget.dataSet.length == 0)
+//        _dateIndex = 0;
+//      else
+//        _dateIndex = widget.dataSet.length - 1;
+//    }
 
     return Stack(
       children: <Widget>[

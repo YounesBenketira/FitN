@@ -9,7 +9,7 @@ class Storage {
   static DateTime now = new DateTime.now();
 
   static DateTime todaysDate = new DateTime(now.year, now.month, now.day);
-//  static DateTime todaysDate = new DateTime(2020, 5, 14);
+//  static DateTime todaysDate = new DateTime(2020, 6, 3);
 
   Future<String> get localPath async {
     final dir = await getApplicationDocumentsDirectory();

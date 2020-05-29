@@ -67,7 +67,7 @@ class _ExerciseCreatorState extends State<ExerciseCreator> {
     "Deadlift",
     "Dumbbell Row",
     "Good Morning",
-    "Hammer-Strength Row",
+    "Hammer Strength Row",
     "LatPulldown",
     "Pendlay Row",
     "Pull Up",
@@ -93,7 +93,7 @@ class _ExerciseCreatorState extends State<ExerciseCreator> {
   ];
 
   static List abs = [
-    'Ab-Wheel Rollout',
+    'Ab Wheel Rollout',
     'Cable Crunch',
     'Crunch',
     'Decline Crunch',

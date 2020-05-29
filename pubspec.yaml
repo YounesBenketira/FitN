@@ -52,11 +52,18 @@ flutter:
     - images/Exercises/legs.png
     - images/Exercises/abs.png
     - images/Exercises/chest.png
+    - images/Exercises/Barbell.png
     - images/Statistics/routine.png
     - images/Statistics/hand.png
     - images/Statistics/heart.png
-    - images/Statistics/BMIChart.jpg
+    - images/Statistics/LBS-&-Inches-Chart.png
+    - images/Statistics/KGS-&-CM-CHART.png
+    - images/Statistics/WaistHeightRatioChart.png
+    - images/Statistics/WaistHipRatioChart.png
     - images/boxing.png
+    - images/diet.png
+    - images/waist.png
+    - images/scale.png
     - images/Backgrounds/bg1.jpg
     - images/Backgrounds/bg2.jpg
     - images/Backgrounds/bg3.jpg
