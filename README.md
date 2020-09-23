@@ -16,4 +16,4 @@ This project is still under development. The following is the UI components that
 <img src="images/Previews/info 1.png" width=300> <img src="images/Previews/info 2.png" width=300> <img src="images/Previews/info 3.png" width=300>
 
 ### Profile Page
-<img src="images/Previews/profile 1.png" width=300> <img src="images/Previews/profile 2.png" width=300>
+ <img src="images/Previews/profile 2.png" width=300> <img src="images/Previews/profile 1.png" width=300> 
