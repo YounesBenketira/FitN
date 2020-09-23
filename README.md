@@ -7,3 +7,4 @@ A cross-platform mobile application made using Flutter that allows users to trac
 This project is still under development. The following is the UI components that have been implemented already.
 
 <img src="images/Previews/calendar 1.png" width=300>
+<img src="images/Previews/calendar 2.png" width=300>
