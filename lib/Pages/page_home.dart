@@ -845,7 +845,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 //      print(_dateIndex);
 
       return Padding(
-        padding: const EdgeInsets.only(top: 190),
+        padding: const EdgeInsets.only(top: 210),
         child: Container(
           child: new ListView.builder(
             physics: const NeverScrollableScrollPhysics(),
