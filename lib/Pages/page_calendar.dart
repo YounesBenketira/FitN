@@ -2,6 +2,7 @@ import 'package:fit_k/Logic/data_storage.dart';
 import 'package:fit_k/Logic/exercise.dart';
 import 'package:fit_k/UI/card_calendar_exercise.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 class CalendarPage extends StatefulWidget {
@@ -24,6 +25,11 @@ class _CalendarPageState extends State<CalendarPage>
 
   @override
   void initState() {
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+      statusBarColor: Colors.white,
+      statusBarIconBrightness: Brightness.dark,
+    ));
+
     _storage = Storage();
     _showSets = false;
     // @TODO exercise count
@@ -83,7 +89,16 @@ class _CalendarPageState extends State<CalendarPage>
       scrollDirection: Axis.vertical,
       children: <Widget>[
         _buildTableCalendarWithBuilders(),
-        _buildShowDetailBtn(),
+
+//        Center(
+//            child: Text(
+//          "Exercise List",
+//          style: TextStyle(fontFamily: "OpenSans", fontSize: 27.5),
+//        )),
+//        Container(
+//          height: 5,
+//        ),
+//        _buildShowDetailBtn(),
         _buildExerciseList(),
 //        _buildExerciseList2(),
       ],
@@ -137,10 +152,7 @@ class _CalendarPageState extends State<CalendarPage>
               child: Container(
                 margin: const EdgeInsets.all(4.0),
                 padding: const EdgeInsets.only(top: 5.0, left: 6.0),
-                color: Theme
-                    .of(context)
-                    .primaryColorLight
-                    .withOpacity(0.6),
+                color: Theme.of(context).primaryColorLight.withOpacity(0.6),
                 width: 100,
                 height: 100,
                 child: Text(
@@ -240,8 +252,7 @@ class _CalendarPageState extends State<CalendarPage>
     else {
       for (int i = 0; i < _events[_selectedDay].length; i++) {
 //      print(_events[_selectedDay][i]['setList']);
-        if (_events[_selectedDay][i]['setList'].length > 0)
-          showButton = true;
+        if (_events[_selectedDay][i]['setList'].length > 0) showButton = true;
       }
 
       if (!showButton) return Container();
@@ -284,17 +295,41 @@ class _CalendarPageState extends State<CalendarPage>
     else
       exerciseList = data[dateIndex]['exercises'];
 
-    return Column(
-      children: <Widget>[
-        ...exerciseList.map((entry) {
-          if (entry['setList'].length == 0) return Container();
+    return InkWell(
+      onTap: () {
+        setState(() {
+          _showSets = !_showSets;
+        });
+      },
+      child: Column(
+        children: <Widget>[
+          if(exerciseList.length > 0)
+            ...exerciseList.map((entry) {
+              if (entry['setList'].length == 0) return Container();
 
-          return CalendarCard(
-            exercise: Exercise.fromJson(entry),
-            showSets: _showSets,
-          );
-        }).toList(),
-      ],
+              return CalendarCard(
+                exercise: Exercise.fromJson(entry),
+                showSets: _showSets,
+              );
+            }).toList()
+          else
+            Padding(
+              padding: const EdgeInsets.only(
+                  bottom: 10, left: 10, right: 10, top: 5),
+              child: Container(
+                  width: double.infinity,
+                  height: 60,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.all(width: 1.5, color: Colors.grey[300]),
+                  ),
+                  child: Center(child: Text('No Exercises Done!',
+                    style: TextStyle(fontFamily: "OpenSans",
+                        fontSize: 25.0,
+                        color: Colors.grey[400]),))),
+            ),
+        ],
+      ),
     );
   }
 }

@@ -1,10 +1,13 @@
 import 'dart:async';
 
 import 'package:fit_k/Enums/cardTheme.dart';
+import 'package:fit_k/Logic/auth.dart';
+import 'package:fit_k/Logic/cloudDatabase.dart';
 import 'package:fit_k/Logic/data_storage.dart';
 import 'package:fit_k/Logic/exercise.dart';
 import 'package:fit_k/UI/card_Exercise.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
@@ -45,6 +48,11 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
   @override
   void initState() {
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+      statusBarColor: Colors.transparent,
+      statusBarIconBrightness: Brightness.light,
+    ));
+
     timeController = TextEditingController();
 
     var data = widget.readPageData();
@@ -61,6 +69,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
     _storage = Storage();
 
+//    print("Data Set in INIT STATE === " + widget.dataSet.toString());
     _updateDataSet();
     _getDateIndex();
 
@@ -126,7 +135,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
         for (int i = 1; i < daysInBetween; i++) {
           DateTime missedDay = latestDay.add(Duration(days: 1) * i);
-          print("Adding missing day: " + missedDay.toIso8601String());
+//          print("Adding missing day: " + missedDay.toIso8601String());
           dataSet.add({'date': missedDay.toIso8601String(), 'exercises': []});
         }
         _storage.save(dataSet);
@@ -136,8 +145,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         setState(() {
           if (dataSet == null) _updateDataSet();
 
-          print('Date Index was null so, added another entry of today');
-          print(_todaysDate);
+//          print('Date Index was null so, added another entry of today');
+//          print(_todaysDate);
 
           dataSet.add({'date': _todaysDate.toIso8601String(), 'exercises': []});
           _dateIndex = dataSet.length - 1;
@@ -158,6 +167,12 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   }
 
   void removeExercise(int index) {
+    Future<String> uid = Auth().currentUserID();
+    uid.then((value) {
+      if (value != null)
+        DatabaseService(uid: value).updateExerciseCount(false, 1);
+    });
+
     List<dynamic> exerciseList = widget.dataSet[_dateIndex]['exercises'];
     setState(() {
       exerciseList.removeAt(index);
@@ -178,6 +193,12 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   }
 
   void addExercise(Exercise ex) {
+    Future<String> uid = Auth().currentUserID();
+    uid.then((value) {
+      if (value != null)
+        DatabaseService(uid: value).updateExerciseCount(true, 1);
+    });
+
     setState(() {
       if (widget.dataSet.length == 0) {
         ex.id = 0;
@@ -206,12 +227,14 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return ListView(
+      padding: EdgeInsets.zero,
       children: <Widget>[
         Stack(
           children: <Widget>[
-            _buildPageHeader(),
+//            _buildPageHeaderSummary(),
+            _buildPageHeaderWorkout(),
             Padding(
-              padding: const EdgeInsets.only(top: 180.0),
+              padding: const EdgeInsets.only(top: 230.0),
               child: Container(
                 width: double.infinity,
                 height: 200,
@@ -224,13 +247,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.only(top: 130.0),
+              padding: const EdgeInsets.only(top: 177.0),
               child: _buildButtons(),
             ),
-            Padding(
-              padding: const EdgeInsets.only(top: 185),
-              child: _buildExerciseList(),
-            ),
+            _buildExerciseList(),
           ],
         ),
       ],
@@ -302,7 +322,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     });
   }
 
-  Widget _buildPageHeader() {
+  Widget _buildPageHeaderWorkout() {
     // widget.dataSet == null ||
 //    if (widget.dataSet.length == 0) {
 //      widget.dataSet = [
@@ -320,7 +340,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       children: <Widget>[
         Container(
           width: double.infinity,
-          height: 220,
+          height: 400,
           decoration: BoxDecoration(
             gradient: LinearGradient(
               begin: Alignment.topLeft,
@@ -337,15 +357,15 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 //          ),
         ),
         Padding(
-          padding: const EdgeInsets.only(left: 10, top: 12.5),
+          padding: const EdgeInsets.only(left: 10, top: 52.5),
           child: Container(
             width: double.infinity,
             child: Text(
               '$_formattedDate',
-//              textAlign: TextAlign.center,
+              textAlign: TextAlign.center,
               style: TextStyle(
                 color: Colors.white,
-                fontSize: 30,
+                fontSize: 32.5,
                 fontFamily: 'OpenSans-Bold',
                 fontWeight: FontWeight.w500,
               ),
@@ -354,13 +374,13 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           ),
         ),
         Padding(
-          padding: const EdgeInsets.only(top: 59, left: 60.0, right: 60.0),
+          padding: const EdgeInsets.only(top: 101, left: 60.0, right: 60.0),
           child: Container(
               width: double.infinity,
               height: 60,
               decoration: BoxDecoration(
                 border:
-                    Border.all(color: Colors.white.withOpacity(0.8), width: 2),
+                Border.all(color: Colors.white.withOpacity(0.8), width: 2),
                 borderRadius: BorderRadius.all(Radius.circular(20)),
               ),
               child: Row(
@@ -505,7 +525,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           exercises = entry['exercises'];
         else {
           for (int i = 0; i < entry['exercises'].length; i++) {
-            exercises.add(Exercise.fromJson(entry['exercises'][i]));
+            if (entry['exercises'][i]['setList'].length > 0)
+              exercises.add(Exercise.fromJson(entry['exercises'][i]));
           }
         }
 
@@ -529,6 +550,14 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                 if (widget.dataSet[i]['date'] ==
                     _todaysDate.toIso8601String()) {
                   setState(() {
+//                    print(temp.length);
+                    Future<String> uid = Auth().currentUserID();
+                    uid.then((value) {
+                      if (value != null)
+                        DatabaseService(uid: value).updateExerciseCount(
+                            true, temp.length);
+                    });
+
                     widget.dataSet[i]['exercises'] = List.from(temp);
                   });
                 }
@@ -643,7 +672,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
     bool showList = false;
     for (int i = 0; i < pastWorkouts.length; i++)
-      if (pastWorkouts[i].runtimeType == Padding) showList = true;
+      if (pastWorkouts[i].runtimeType == Padding) {
+        showList = true;
+      }
 
     Widget copyDialog = Dialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
@@ -653,8 +684,13 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             height: 350,
             child: showList
                 ? ListView(
+//                    reverse: true,
               scrollDirection: Axis.vertical,
-              children: <Widget>[...pastWorkouts],
+              children: <Widget>[
+                Container(height: 10,),
+                Center(child: Text("Workout History",
+                  style: TextStyle(fontFamily: "OpenSans", fontSize: 25.0),),),
+                ...pastWorkouts.reversed.toList()],
             )
                 : Padding(
               padding: const EdgeInsets.all(8.0),
@@ -691,11 +727,12 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 //          width: 120,
 //          color: Colors.pink,
           child: RaisedButton(
-//            shape: RoundedRectangleBorder(
-//                borderRadius: BorderRadius.all(
-//                  Radius.circular(15),
-//                ),
-//                side: BorderSide(color: Colors.white)),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(
+                Radius.circular(15),
+              ),
+//                side: BorderSide(color: Colors.white)
+            ),
             color: Colors.white.withOpacity(0.3),
             highlightColor: Colors.white.withOpacity(0.5),
             splashColor: Colors.white.withOpacity(0.5),
@@ -725,11 +762,12 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             color: Colors.white.withOpacity(0.3),
             highlightColor: Colors.white.withOpacity(0.5),
             splashColor: Colors.white.withOpacity(0.5),
-//            shape: RoundedRectangleBorder(
-//                borderRadius: BorderRadius.all(
-//                  Radius.circular(15),
-//                ),
-//                side: BorderSide(color: Colors.white)),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(
+                Radius.circular(15),
+              ),
+//                side: BorderSide(color: Colors.white)
+            ),
             elevation: 0,
             icon: Icon(
               Icons.add,
@@ -769,42 +807,69 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 //      print('DATA = ' + snapshot.data.toString());
 //      print('INDEX = ' + _dateIndex.toString());
 //      print(snapshot.data[_dateIndex]);
-      if (snapshot.data == null || snapshot.data.length == 0)
+      if (snapshot.data == null || snapshot.data.length == 0) {
         values = [];
-      else {
+      } else {
         // @TODO can cause error in future
         if (_dateIndex == null || _dateIndex >= snapshot.data.length)
           _dateIndex = snapshot.data.length - 1;
         values = snapshot.data[_dateIndex]['exercises'];
+
+        if (values.length == 0) {
+          return Padding(
+            padding: const EdgeInsets.only(
+                left: 10.0, right: 10.0, bottom: 10.0, top: 245),
+            child: Container(
+              width: double.infinity,
+              height: 300,
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.grey[300], width: 2),
+                borderRadius: BorderRadius.circular(30),
+//                color: Colors.red,
+              ),
+              child: Center(
+                child: Text(
+                  "No Exercises Done!",
+                  style: TextStyle(
+                      fontFamily: "OpenSans",
+                      fontSize: 25,
+                      color: Colors.grey[400]),
+                ),
+              ),
+            ),
+          );
+        }
       }
 
 //      print(snapshot.data);
 //      print(_dateIndex);
 
-      return Container(
-//        color: Colors.purple,
-        child: new ListView.builder(
-          physics: const NeverScrollableScrollPhysics(),
-          primary: false,
-          shrinkWrap: true,
-          itemCount: values.length,
-          itemBuilder: (BuildContext context, int index) {
-            Exercise temp;
-            if (values[index].runtimeType == Exercise)
-              temp = values[index];
-            else
-              temp = Exercise.fromJson(values[index]);
+      return Padding(
+        padding: const EdgeInsets.only(top: 190),
+        child: Container(
+          child: new ListView.builder(
+            physics: const NeverScrollableScrollPhysics(),
+            primary: false,
+            shrinkWrap: true,
+            itemCount: values.length,
+            itemBuilder: (BuildContext context, int index) {
+              Exercise temp;
+              if (values[index].runtimeType == Exercise)
+                temp = values[index];
+              else
+                temp = Exercise.fromJson(values[index]);
 
-            return new Column(
-              children: <Widget>[
-                ExerciseCard(
-                  exercise: temp,
-                  deleteExercise: removeExercise,
-                  updateDataSet: _updateDataSet,
-                ),
-              ],
-            );
-          },
+              return new Column(
+                children: <Widget>[
+                  ExerciseCard(
+                    exercise: temp,
+                    deleteExercise: removeExercise,
+                    updateDataSet: _updateDataSet,
+                  ),
+                ],
+              );
+            },
+          ),
         ),
       );
     }
@@ -813,11 +878,11 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       future: _getData(),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         switch (snapshot.connectionState) {
-          case ConnectionState.none:
           case ConnectionState.waiting:
 //            print(widget.dataSet);
             if (_lastSnapshot == null) return new Text('');
             return createListView(context, _lastSnapshot);
+          case ConnectionState.none:
           default:
 //              print('BEFORE ' + _lastSnapshot.toString());
 //            print('changeLast');

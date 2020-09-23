@@ -3,6 +3,7 @@ import 'package:fit_k/Logic/data_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
+import 'package:flutter/services.dart';
 
 class StatisticsPage extends StatefulWidget {
   StatisticsPage({Key key}) : super(key: key);
@@ -18,6 +19,11 @@ class _StatisticsPageState extends State<StatisticsPage> {
 
   @override
   void initState() {
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+      statusBarColor: Colors.white,
+      statusBarIconBrightness: Brightness.dark,
+    ));
+
     _storage = Storage();
     _storage.readData().then((value) {
       setState(() {
@@ -163,29 +169,85 @@ class _StatisticsPageState extends State<StatisticsPage> {
 
   Widget _buildWorkoutStats() {
     String highestWeightLabel = 'Heaviest Lift';
+    String prBenchLabel = 'Bench PR';
+    String prDeadliftLabel = 'Deadlift PR';
+    String prSquatLabel = 'Squat PR';
     String mostDoneLabel = 'Most Sets';
-    String distanceRanLabel = 'Distance Ran';
     String averageLabel = 'Days/Week';
 
+    String averageData = '';
+
     int highestWeight = 0;
+    int setsDone = 0;
+    String exerciseName = '';
+
+    int benchPR = 0;
+    int squatPR = 0;
+    int deadliftPR = 0;
     if (data != null) {
+      if (data.length < 7) {
+        averageData = "Not enough data";
+      } else {
+        List amountOfDaysPerWeek = [];
+        int temp = 0;
+
+        for (int i = 0; i < data.length; i++) {
+          if (data[i]['exercises'].length > 0) temp++;
+
+          if (i % 6 == 0) {
+            amountOfDaysPerWeek.add(temp);
+            temp = 0;
+          }
+        }
+        temp = 0;
+        double sum = 0;
+        for (int i = 0; i < amountOfDaysPerWeek.length; i++) {
+          sum += amountOfDaysPerWeek[i];
+          temp++;
+        }
+
+        averageData = (sum / temp).toStringAsFixed(1) + " Days";
+      }
+
+      // Personal Records
+      for (int i = 0; i < data.length; i++)
+        for (int k = 0; k < data[i]['exercises'].length; k++) {
+          if (data[i]['exercises'][k]['workout'] == 28) {
+            // Bench
+            for (int p = 0; p < data[i]['exercises'][k]['setList'].length; p++)
+              if (data[i]['exercises'][k]['setList'][p.toString()][1] >
+                  benchPR) {
+                benchPR = data[i]['exercises'][k]['setList'][p.toString()][1];
+              }
+          } else if (data[i]['exercises'][k]['workout'] == 37) {
+            // Deadlift
+            for (int p = 0; p < data[i]['exercises'][k]['setList'].length; p++)
+              if (data[i]['exercises'][k]['setList'][p.toString()][1] >
+                  deadliftPR) {
+                deadliftPR =
+                    data[i]['exercises'][k]['setList'][p.toString()][1];
+              }
+          } else if (data[i]['exercises'][k]['workout'] == 49) {
+            // Squat
+            for (int p = 0; p < data[i]['exercises'][k]['setList'].length; p++)
+              if (data[i]['exercises'][k]['setList'][p.toString()][1] >
+                  squatPR) {
+                squatPR = data[i]['exercises'][k]['setList'][p.toString()][1];
+              }
+          }
+        }
+
+      // Highest Weight
       for (int i = 0; i < data.length; i++)
         for (int k = 0; k < data[i]['exercises'].length; k++)
           for (int p = 0; p < data[i]['exercises'][k]['setList'].length; p++)
             if (data[i]['exercises'][k]['setList'][p.toString()][1] >
                 highestWeight) {
-              // @TODO extract more info
               highestWeight =
                   data[i]['exercises'][k]['setList'][p.toString()][1];
             }
-    }
 
-    String highestWeightData = highestWeight.toString() + ' lbs';
-
-    int setsDone = 0;
-    String exerciseName = '';
-
-    if (data != null) {
+      // Most Sets
       for (int i = 0; i < data.length; i++)
         for (int k = 0; k < data[i]['exercises'].length; k++)
           if (data[i]['exercises'][k]['setList'].length > setsDone) {
@@ -194,7 +256,36 @@ class _StatisticsPageState extends State<StatisticsPage> {
           }
     }
 
-    String mostDoneData = exerciseName + ' (x$setsDone)';
+    String highestWeightData;
+    String benchPRData;
+    String squatPRData;
+    String deadliftPRData;
+    String mostDoneData;
+
+    if (highestWeight == 0)
+      highestWeightData = "No Data";
+    else
+      highestWeightData = highestWeight.toString() + ' lbs';
+
+    if (deadliftPR == 0)
+      deadliftPRData = "No Data";
+    else
+      deadliftPRData = deadliftPR.toString() + " lbs";
+
+    if (benchPR == 0)
+      benchPRData = "No Data";
+    else
+      benchPRData = benchPR.toString() + " lbs";
+
+    if (squatPR == 0)
+      squatPRData = "No Data";
+    else
+      squatPRData = squatPR.toString() + " lbs";
+
+    if (exerciseName == '')
+      mostDoneData = "No Data";
+    else
+      mostDoneData = exerciseName + ' (x$setsDone)';
 
     List<WeekDay> weekDayData = [
       new WeekDay('Sun'),
@@ -211,7 +302,7 @@ class _StatisticsPageState extends State<StatisticsPage> {
           id: 'Weekdays',
           colorFn: (WeekDay day, __) {
             if (day.isLastWeek())
-              return charts.MaterialPalette.red.shadeDefault;
+              return charts.MaterialPalette.gray.shadeDefault;
             else
               return charts.MaterialPalette.blue.shadeDefault;
           },
@@ -264,9 +355,6 @@ class _StatisticsPageState extends State<StatisticsPage> {
             isLastWeek = true;
             break;
         }
-
-//        print(date);
-//        print(date.weekday);
       }
     }
 
@@ -280,9 +368,9 @@ class _StatisticsPageState extends State<StatisticsPage> {
               color: Colors.white,
               boxShadow: [
                 BoxShadow(
-                  color: Colors.grey.withOpacity(0.5),
+                  color: Colors.grey.withOpacity(0.4),
                   blurRadius: 5.0, // has the effect of softening the shadow
-                  spreadRadius: 3, // has the effect of extending the shadow
+                  spreadRadius: 1.5, // has the effect of extending the shadow
                   offset: Offset(
                     2.0, // horizontal, move right 10
                     4.0, // vertical, move down 10
@@ -297,7 +385,7 @@ class _StatisticsPageState extends State<StatisticsPage> {
                   height: 5,
                 ),
                 Text(
-                  '# Exercises',
+                  'Weekly Summary',
                   textAlign: TextAlign.left,
                   style: TextStyle(
                       fontSize: 25,
@@ -316,21 +404,43 @@ class _StatisticsPageState extends State<StatisticsPage> {
             ),
           ),
         ),
-        Statistic(
-          label: highestWeightLabel,
-          data: highestWeightData,
+        Text(
+          'Achievements',
+          style: TextStyle(fontSize: 30, fontFamily: 'OpenSans'),
         ),
+        Container(
+          height: 5,
+        ),
+//        Padding(
+//          padding: const EdgeInsets.only(left: 100.0, right: 100.0),
+//          child: Container(
+//            height: 1,
+//            color: Colors.black,
+//          ),
+//        ),
         Statistic(
           label: mostDoneLabel,
           data: mostDoneData,
         ),
         Statistic(
-          label: distanceRanLabel,
-          data: '125 km',
+          label: averageLabel,
+          data: averageData,
         ),
         Statistic(
-          label: averageLabel,
-          data: '3.5 Days',
+          label: highestWeightLabel,
+          data: highestWeightData,
+        ),
+        Statistic(
+          label: prBenchLabel,
+          data: benchPRData,
+        ),
+        Statistic(
+          label: prSquatLabel,
+          data: squatPRData,
+        ),
+        Statistic(
+          label: prDeadliftLabel,
+          data: deadliftPRData,
         ),
         Container(
           height: 10,
@@ -1191,9 +1301,9 @@ class _StatisticsPageState extends State<StatisticsPage> {
               color: Colors.white,
               boxShadow: [
                 BoxShadow(
-                  color: Colors.grey.withOpacity(0.5),
+                  color: Colors.grey.withOpacity(0.4),
                   blurRadius: 5.0, // has the effect of softening the shadow
-                  spreadRadius: 3, // has the effect of extending the shadow
+                  spreadRadius: 1.5, // has the effect of extending the shadow
                   offset: Offset(
                     2.0, // horizontal, move right 10
                     4.0, // vertical, move down 10
@@ -1934,10 +2044,19 @@ class Statistic extends StatelessWidget {
       case 'Days/Week':
         statIcon = Image.asset('images/Statistics/routine.png');
         break;
+      case 'Bench PR':
+        statIcon = Image.asset('images/Exercises/chest.png');
+        break;
+      case 'Squat PR':
+        statIcon = Image.asset('images/Exercises/legs.png');
+        break;
+      case 'Deadlift PR':
+        statIcon = Image.asset('images/Exercises/back.png');
+        break;
     }
 
     return Padding(
-      padding: const EdgeInsets.only(left: 8.0, right: 8.0, top: 10),
+      padding: const EdgeInsets.only(left: 8.0, right: 8.0, bottom: 10),
       child: Stack(
         children: <Widget>[
           Container(
@@ -1948,9 +2067,9 @@ class Statistic extends StatelessWidget {
               color: Colors.white,
               boxShadow: [
                 BoxShadow(
-                  color: Colors.grey.withOpacity(0.5),
+                  color: Colors.grey.withOpacity(0.4),
                   blurRadius: 5.0, // has the effect of softening the shadow
-                  spreadRadius: 2, // has the effect of extending the shadow
+                  spreadRadius: 1, // has the effect of extending the shadow
                   offset: Offset(
                     2.0, // horizontal, move right 10
                     4.0, // vertical, move down 10
@@ -1983,20 +2102,17 @@ class Statistic extends StatelessWidget {
                       ),
                       Text(
                         label,
-                        style:
-                        TextStyle(fontSize: 20, fontFamily: 'OpenSans-Bold'),
+                        style: TextStyle(
+                            fontSize: 20, fontFamily: 'OpenSans-Bold'),
                       ),
                     ],
                   ),
-                  FittedBox(
-                    fit: BoxFit.fitWidth,
-                    child: Text(
-                      data,
-                      style: TextStyle(
-                          fontSize: 20,
-                          fontFamily: 'OpenSans',
-                          color: Colors.blue),
-                    ),
+                  Text(
+                    data,
+                    style: TextStyle(
+                        fontSize: 20,
+                        fontFamily: 'OpenSans',
+                        color: Colors.blue),
                   ),
                 ],
               ),

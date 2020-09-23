@@ -291,35 +291,8 @@ class Exercise {
         this.title = 'Side Plank';
         this.icon = Image.asset('images/Exercises/abs.png');
         break;
-      case Workout.Cycling:
-        this.title = 'Cycling';
-        this.icon = Image.asset('images/Exercises/cardio.png');
-        break;
-      case Workout.Elliptical:
-        this.title = 'Elliptical';
-        this.icon = Image.asset('images/Exercises/cardio.png');
-        break;
-      case Workout.RowingMachine:
-        this.title = 'Rowing Machine';
-        this.icon = Image.asset('images/Exercises/cardio.png');
-        break;
-      case Workout.Running:
-        this.title = 'Running';
-        this.icon = Image.asset('images/Exercises/cardio.png');
-        break;
-      case Workout.Bike:
-        this.title = 'Bike';
-        this.icon = Image.asset('images/Exercises/cardio.png');
-        break;
-      case Workout.Swimming:
-        this.title = 'Swimming';
-        this.icon = Image.asset('images/Exercises/cardio.png');
-        break;
-      case Workout.Walking:
-        this.title = 'Walking';
-        this.icon = Image.asset('images/Exercises/cardio.png');
-        break;
     }
+
     this.setList = {};
     excerciseCount++;
   }
@@ -333,7 +306,7 @@ class Exercise {
     icon = Image.asset(map['icon']);
   }
 
-  Map<String, dynamic> toJson(){
+  Map<String, dynamic> toJson() {
     var map = <String, dynamic>{
       'id': id,
       'workout': workout.index,
@@ -341,7 +314,7 @@ class Exercise {
       'setList': setList,
       'title': title,
       'icon':
-          icon.image.toString().substring(32, icon.image.toString().length - 2)
+          icon.image.toString().substring(32, icon.image.toString().length - 2),
     };
 
 //    print();

@@ -1,4 +1,4 @@
-package benk.applications.fit_k;
+package benk.applications.fitN;
 
 import androidx.annotation.NonNull;
 import io.flutter.embedding.android.FlutterActivity;

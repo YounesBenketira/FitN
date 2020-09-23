@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "570659079541",
+    "firebase_url": "https://fitn-341e2.firebaseio.com",
+    "project_id": "fitn-341e2",
+    "storage_bucket": "fitn-341e2.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:570659079541:android:2da577ccbb75aefc66bf3c",
+        "android_client_info": {
+          "package_name": "benk.applications.fitN"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "570659079541-p4gbg220ei7b5k22af0rr37e3dt7iv4b.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBPo1AnjzkZR13I8hLScZc9vcTYyFPuRVA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "570659079541-p4gbg220ei7b5k22af0rr37e3dt7iv4b.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

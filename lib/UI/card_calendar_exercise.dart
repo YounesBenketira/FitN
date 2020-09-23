@@ -220,27 +220,6 @@ class CalendarCard extends StatelessWidget {
       case Workout.SidePlank:
         this._title = 'Side Plank';
         break;
-      case Workout.Cycling:
-        this._title = 'Cycling';
-        break;
-      case Workout.Elliptical:
-        this._title = 'Elliptical';
-        break;
-      case Workout.RowingMachine:
-        this._title = 'Rowing Machine';
-        break;
-      case Workout.Running:
-        this._title = 'Running';
-        break;
-      case Workout.Bike:
-        this._title = 'Bike';
-        break;
-      case Workout.Swimming:
-        this._title = 'Swimming';
-        break;
-      case Workout.Walking:
-        this._title = 'Walking';
-        break;
     }
 
     // Dynamically set widget theme
@@ -320,7 +299,12 @@ class CalendarCard extends StatelessWidget {
 
     Widget _buildCard() {
       return Padding(
-        padding: const EdgeInsets.only(top: 8, bottom: 8, left: 12, right: 12),
+        padding: const EdgeInsets.only(
+          top: 8,
+          bottom: 8,
+          left: 13,
+          right: 13,
+        ),
         child: Container(
           height: 60,
           width: double.infinity,

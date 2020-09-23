@@ -1,10 +1,14 @@
+import 'package:fit_k/Logic/auth.dart';
+import 'package:fit_k/Logic/profile.dart';
 import 'package:fit_k/Logic/route_generator.dart';
 import 'package:fit_k/Pages/page_calendar.dart';
 import 'package:fit_k/Pages/page_home.dart';
 import 'package:fit_k/Pages/page_profile.dart';
 import 'package:fit_k/Pages/page_statistics.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
+import 'Logic/cloudDatabase.dart';
 import 'Logic/data_storage.dart';
 
 void main() => runApp(MyApp());
@@ -88,6 +92,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
     profilePage = ProfilePage(
       key: profileKey,
+      auth: new Auth(),
     );
 
     pages = [homePage, calendarPage, statisticsPage, profilePage];
@@ -100,14 +105,17 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: PageStorage(
-        child: currentPage,
-        bucket: bucket,
+    return StreamProvider<List<Profile>>.value(
+      value: DatabaseService().profileData,
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        body: PageStorage(
+          child: currentPage,
+          bucket: bucket,
+        ),
+        bottomNavigationBar:
+            _buildBottomNavigationBar(), // This trailing comma makes auto-formatting nicer for build methods.
       ),
-      bottomNavigationBar:
-          _buildBottomNavigationBar(), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 

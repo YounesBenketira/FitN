@@ -9,7 +9,8 @@ class Storage {
   static DateTime now = new DateTime.now();
 
   static DateTime todaysDate = new DateTime(now.year, now.month, now.day);
-//  static DateTime todaysDate = new DateTime(2020, 6, 3);
+
+//  static DateTime todaysDate = new DateTime(2020, 7, 17);
 
   Future<String> get localPath async {
     final dir = await getApplicationDocumentsDirectory();
@@ -35,6 +36,10 @@ class Storage {
   }
 
   Future<File> writeData(String data) async {
+//    print("Writing Data");
+//    print(data);
+    if (data.length < 1) return null;
+
     final file = await localFile;
 
     return await file.writeAsString("$data");

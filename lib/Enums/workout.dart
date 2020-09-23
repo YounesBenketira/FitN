@@ -75,12 +75,4 @@ enum Workout {
   HangingLegRaise,
   Plank,
   SidePlank,
-  // Cardio
-  Cycling,
-  Elliptical,
-  RowingMachine,
-  Running,
-  Bike,
-  Swimming,
-  Walking
 }

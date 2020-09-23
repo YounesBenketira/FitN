@@ -47,6 +47,7 @@ class ExerciseCard extends StatefulWidget {
 class _ExerciseCardState extends State<ExerciseCard> {
   TextEditingController _repController;
   TextEditingController _weightController;
+
   Storage _storage;
 
   @override
@@ -302,9 +303,7 @@ class _ExerciseCardState extends State<ExerciseCard> {
                               contentPadding: EdgeInsets.only(bottom: 1),
                               enabledBorder: OutlineInputBorder(
                                 borderSide: BorderSide(
-                                  color: Theme
-                                      .of(context)
-                                      .primaryColor,
+                                  color: Theme.of(context).primaryColor,
                                   width: 1,
                                 ),
                               ),

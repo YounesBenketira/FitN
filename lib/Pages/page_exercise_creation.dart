@@ -104,16 +104,6 @@ class _ExerciseCreatorState extends State<ExerciseCreator> {
     'Side Plank',
   ];
 
-  static List cardio = [
-    'Cycling',
-    'Elliptical',
-    'Rowing Machine',
-    'Running',
-    'Bike',
-    'Swimming',
-    'Walking',
-  ];
-
   static List<Map> data = [
     {'Category': 'Shoulders', 'Exercises': shoulders},
     {'Category': 'Triceps', 'Exercises': triceps},
@@ -122,7 +112,6 @@ class _ExerciseCreatorState extends State<ExerciseCreator> {
     {'Category': 'Back', 'Exercises': back},
     {'Category': 'Legs', 'Exercises': legs},
     {'Category': 'Abs', 'Exercises': abs},
-    {'Category': 'Cardio', 'Exercises': cardio},
   ];
 
   List categories = [
@@ -133,7 +122,6 @@ class _ExerciseCreatorState extends State<ExerciseCreator> {
     'Back',
     'Legs',
     'Abs',
-    'Cardio'
   ];
 
   List colors = [
