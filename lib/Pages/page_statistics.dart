@@ -85,7 +85,7 @@ class _StatisticsPageState extends State<StatisticsPage> {
                             color: btnIndex == 0 ? Colors.white : Colors.grey),
                       ),
                       child: Text(
-                        'Workouts',
+                        'Workout',
                         style: TextStyle(
                           fontSize: 17.5,
                           color: btnIndex == 0 ? Colors.white : Colors.black54,
@@ -744,7 +744,7 @@ class _StatisticsPageState extends State<StatisticsPage> {
                   double.parse(heightController.text.toString()[0]);
                   double.parse(heightController.text.toString().substring(2));
                   double.parse(weightController.text);
-                } on RangeError catch (e) {
+                } on RangeError {
                   final snackBar = SnackBar(
                     content: Text(
                       'Incorrect Input!',
@@ -755,7 +755,7 @@ class _StatisticsPageState extends State<StatisticsPage> {
                   );
                   Scaffold.of(this.context).showSnackBar(snackBar);
                   return;
-                } on FormatException catch (e) {
+                } on FormatException {
                   final snackBar = SnackBar(
                     content: Text(
                       'Incorrect Input!',
@@ -1897,7 +1897,7 @@ class _StatisticsPageState extends State<StatisticsPage> {
                 int.parse(weightController.text);
                 int.parse(liftController.text);
                 ratingRanges.length;
-              } on FormatException catch (e) {
+              } on FormatException {
                 final snackBar = SnackBar(
                   content: Text(
                     'Incorrect Input!',

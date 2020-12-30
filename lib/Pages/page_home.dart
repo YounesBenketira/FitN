@@ -207,8 +207,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           'exercises': [ex]
         });
       } else {
-//        print(widget.dataSet.length);
-//        print(_dateIndex);
+        //print(widget.dataSet.length);
+        //print(_dateIndex);
+        // @TODO FIX NON INCLUSIVE ERROR
         ex.id = widget.dataSet[_dateIndex]['exercises'].length;
         widget.dataSet[_dateIndex]['exercises'].add(ex);
       }

@@ -1,5 +1,6 @@
 import 'package:fit_k/Logic/auth.dart';
 import 'package:fit_k/Logic/cloudDatabase.dart';
+import 'package:fit_k/Logic/exercise.dart';
 import 'package:fit_k/Logic/profile.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -47,7 +48,7 @@ class _LoggedInPageState extends State<LoggedInPage> {
   void updateFriendsListUI(Profile friend, bool add) {
     if (add) {
       if (!friendsList.contains(friend)) {
-        print("Adding Friend to UI");
+        //print("Adding Friend to UI");
         setState(() {
           friendsList.add(friend);
         });
@@ -74,7 +75,7 @@ class _LoggedInPageState extends State<LoggedInPage> {
         Scaffold.of(context).showSnackBar(snackBar);
       }
     } else {
-      print("Removing Friend from UI");
+      //print("Removing Friend from UI");
       setState(() {
         friendsList.remove(friend);
       });
@@ -355,49 +356,66 @@ class _LoggedInPageState extends State<LoggedInPage> {
     );
   }
 
+  bool sunday = false;
+  bool monday = false;
+  bool tuesday = false;
+  bool wednesday = false;
+  bool thursday = false;
+  bool friday = false;
+  bool saturday = false;
+
   Widget _buildRoutineButton() {
-    return Padding(
-      padding:
-          const EdgeInsets.only(left: 15, right: 15, top: 12.5, bottom: 10),
-      child: Container(
-        width: double.infinity,
-        height: 60,
-        decoration: BoxDecoration(
-          color: Colors.white,
-          boxShadow: [
-            BoxShadow(
-              color: Colors.grey.withOpacity(0.5),
-              blurRadius: 5, // has the effect of softening the shadow
-              spreadRadius: 1, // has the effect of extending the shadow
-              offset: Offset(
-                1.0, // horizontal, move right 10
-                2.0, // vertical, move down 10
-              ),
-            )
-          ],
-          borderRadius: BorderRadius.all(Radius.circular(5)),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.only(left: 10.0, right: 20.0),
-          child: Row(
-//            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.only(top: 4.0, bottom: 4.0),
-                child: Image.asset("images/Statistics/routine.png"),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(left: 10),
-                child: Text(
-                  'Add Workout Routine',
-                  style: TextStyle(
-                    fontSize: 20,
-                    color: Colors.grey[700],
-                    fontFamily: 'OpenSans',
-                  ),
+    return InkWell(
+      onTap: () {
+        showDialog(
+            context: context,
+            builder: (context) {
+              return AddRoutineDialog();
+            });
+      },
+      child: Padding(
+        padding:
+            const EdgeInsets.only(left: 15, right: 15, top: 12.5, bottom: 10),
+        child: Container(
+          width: double.infinity,
+          height: 60,
+          decoration: BoxDecoration(
+            color: Colors.white,
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.withOpacity(0.5),
+                blurRadius: 5, // has the effect of softening the shadow
+                spreadRadius: 1, // has the effect of extending the shadow
+                offset: Offset(
+                  1.0, // horizontal, move right 10
+                  2.0, // vertical, move down 10
                 ),
               )
             ],
+            borderRadius: BorderRadius.all(Radius.circular(5)),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.only(left: 10.0, right: 20.0),
+            child: Row(
+//            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.only(top: 4.0, bottom: 4.0),
+                  child: Image.asset("images/Statistics/routine.png"),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 10),
+                  child: Text(
+                    'Add Workout Routine',
+                    style: TextStyle(
+                      fontSize: 20,
+                      color: Colors.grey[700],
+                      fontFamily: 'OpenSans',
+                    ),
+                  ),
+                )
+              ],
+            ),
           ),
         ),
       ),
@@ -956,6 +974,193 @@ class _InboxEntryState extends State<InboxEntry> {
           ),
         ),
       ],
+    );
+  }
+}
+
+class AddRoutineDialog extends StatefulWidget {
+  List<RoutineWeekdayButton> _buttonList = [
+    RoutineWeekdayButton(false, "S"),
+    RoutineWeekdayButton(false, "M"),
+    RoutineWeekdayButton(false, "T"),
+    RoutineWeekdayButton(false, "W"),
+    RoutineWeekdayButton(false, "T"),
+    RoutineWeekdayButton(false, "F"),
+    RoutineWeekdayButton(false, "S"),
+  ];
+
+  List<Exercise> _excerciseList = [];
+
+  @override
+  _AddRoutineDialogState createState() => _AddRoutineDialogState();
+}
+
+class _AddRoutineDialogState extends State<AddRoutineDialog> {
+
+
+  @override
+  Widget build(BuildContext context) {
+    return Dialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+//                  elevation: 16,
+        child: Container(
+          width: double.infinity,
+          height: 400,
+          child: ListView(
+            children: <Widget>[
+              Container(
+                height: 20,
+              ),
+              Center(
+                child: Text(
+                  "Add Routine",
+                  style: TextStyle(fontFamily: "OpenSans", fontSize: 25.0),
+                ),
+              ),
+              Container(
+                height: 20,
+              ),
+              Row(
+                children: [
+                  ...widget._buttonList,
+                ],
+              ),
+              Padding(
+                padding: const EdgeInsets.only(
+                    top: 10.0, bottom: 10.0, left: 20.0, right: 20.0),
+                child: Container(
+                  decoration: BoxDecoration(
+//            color: Colors.pink,
+                    borderRadius: BorderRadius.all(Radius.circular(20)),
+                    border: Border.all(
+                      width: 2,
+                      color: Colors.grey[300],
+                    ),
+                  ),
+                  height: 200,
+                  child: ListView(
+                    children: <Widget>[
+                      Padding(
+                        padding: const EdgeInsets.only(
+                            bottom: 15.0, top: 10.0, left: 15.0, right: 15.0),
+                        child: Container(
+                          width: double.infinity,
+                          height: 40,
+                          child: FlatButton(
+                              onPressed: () {
+                                showDialog(
+                                    context: context,
+                                    builder: (context) {
+                                      return Dialog(
+                                          shape: RoundedRectangleBorder(
+                                              borderRadius: BorderRadius
+                                                  .circular(20)),
+                                          child: Container(
+                                            width: double.infinity,
+                                            height: 200,
+                                            child: Text(
+                                                "Swag"
+                                            ),)
+                                      );
+                                    });
+                              },
+                              color: Colors.grey[300],
+                              child: Text(
+                                "Add Workout",
+                                style: TextStyle(
+                                    fontFamily: "OpenSans",
+                                    fontSize: 23,
+                                    color: Colors.grey[500]),
+                              )),
+                        ),
+                      ),
+//                Friend('Anthony Kumar', 200),
+//                Friend('Alexander David', 299),
+                    ],
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 237.5),
+                child: Align(
+                  alignment: Alignment.topCenter,
+                  child: Container(
+                    width: 150,
+                    child: RaisedButton(
+                      color: Colors.white,
+                      elevation: 10,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: new BorderRadius.circular(18.0),
+//                side: BorderSide(color: Colors.red)
+                      ),
+                      child: Text(
+                        'Edit Profile',
+                        style: TextStyle(
+                            fontSize: 17.5,
+                            color: Colors.blueAccent,
+                            fontFamily: 'OpenSans'),
+                      ),
+                      onPressed: () {
+                        for (int i = 0; i < widget._buttonList.length; i++) {
+                          print(widget._buttonList[i].label +
+                              " " +
+                              widget._buttonList[i].selected.toString());
+                        }
+                      },
+                    ),
+                  ),
+                ),
+              )
+            ],
+          ),
+        ));
+  }
+}
+
+class RoutineWeekdayButton extends StatefulWidget {
+  bool selected;
+  String label;
+
+  RoutineWeekdayButton(this.selected, this.label);
+
+  @override
+  _RoutineWeekdayButtonState createState() => _RoutineWeekdayButtonState();
+}
+
+class _RoutineWeekdayButtonState extends State<RoutineWeekdayButton> {
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(left: 10.0),
+      child: Container(
+        width: 35,
+        height: 30,
+        child: RaisedButton(
+          elevation: 0,
+          color: widget.selected ? Colors.lightBlue : Colors.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: new BorderRadius.circular(18.0),
+            side:
+            BorderSide(color: widget.selected ? Colors.white : Colors.grey),
+          ),
+          child: Text(
+            widget.label,
+            textAlign: TextAlign.left,
+            style: TextStyle(
+              fontSize: 12.5,
+              color: widget.selected ? Colors.white : Colors.black54,
+              fontFamily: 'OpenSans',
+            ),
+          ),
+          onPressed: () {
+//                print(selected);
+//                print(sunday);
+            setState(() {
+              widget.selected = !widget.selected;
+            });
+          },
+        ),
+      ),
     );
   }
 }
